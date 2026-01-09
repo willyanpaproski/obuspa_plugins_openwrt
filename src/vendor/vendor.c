@@ -49,6 +49,9 @@
 #include "vendor_api.h"
 #include "usp_api.h"
 
+//Plugins
+#include "plugins/deviceInfo.h"
+
 /*********************************************************************//**
 **
 ** VENDOR_Init
@@ -62,6 +65,9 @@
 **************************************************************************/
 int VENDOR_Init(void)
 {
+    int err = USP_ERR_OK;
+
+    err |= USP_REGISTER_VendorParam_ReadOnly("Device.DeviceInfo.X_IXC_Teste", GetTeste, DM_STRING);
 
     return USP_ERR_OK;
 }

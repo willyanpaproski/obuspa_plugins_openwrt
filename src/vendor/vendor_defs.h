@@ -165,9 +165,9 @@
 // Various defines for constant parameters in Device.DeviceInfo
 // These defines are only used if USP Agent core implements DeviceInfo (see REMOVE_DEVICE_INFO above)
 // These defines MUST be modified by the vendor
-#define VENDOR_PRODUCT_CLASS "USP Agent"   // Configures the value of Device.DeviceInfo.ProductClass
-#define VENDOR_MANUFACTURER  "Manufacturer"   // Configures the value of Device.DeviceInfo.Manufacturer
-#define VENDOR_MODEL_NAME    "USP Agent"   // Configures the value of Device.DeviceInfo.ModelName
+#define VENDOR_PRODUCT_CLASS "IXC_CPE_WRT"   // Configures the value of Device.DeviceInfo.ProductClass
+#define VENDOR_MANUFACTURER  "IXCSoft"   // Configures the value of Device.DeviceInfo.Manufacturer
+#define VENDOR_MODEL_NAME    "IXC_CPE_WRT"   // Configures the value of Device.DeviceInfo.ModelName
 
 // URI of data model implemented by USP Agent
 #define BBF_DATA_MODEL_URI "urn:broadband-forum-org:tr-181-2-12-0"
@@ -211,7 +211,7 @@
 //       If after modifying, you are unsure, try reading back the default values from an empty database and checking that they make sense
 #define BULKDATA_MAX_PROFILES 5                    // Maximum number of bulk data profiles supported
 #define BULKDATA_MAX_RETAINED_FAILED_REPORTS 3     // Maximum number of retained failed bulk data reports
-#define BULKDATA_MINIMUM_REPORTING_INTERVAL 1    // Minimum supported reporting interval, in seconds
+#define BULKDATA_MINIMUM_REPORTING_INTERVAL 60    // Minimum supported reporting interval, in seconds
 #define BULKDATA_HTTP_AUTH_METHOD  CURLAUTH_BASIC  // HTTP Authentication method to use. Note: Normally over https
 
 #define BULKDATA_CONNECT_TIMEOUT 30   // Timeout (in seconds) when attempting to connect to a bulk data collection server
