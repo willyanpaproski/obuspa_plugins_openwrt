@@ -129,7 +129,7 @@ obuspa_CPPFLAGS +=  $(AM_CPPFLAGS) \
 obuspa_LDFLAGS = $(AM_LDFLAGS) -rdynamic
 
 obuspa_LDADD = -lm -ldl -lpthread -lrt
-obuspa_LDADD += $(openssl_LIBS) $(sqlite3_LIBS) $(libcurl_LIBS) $(zlib_LIBS) $(libmosquitto_LIBS) $(libwebsockets_LIBS)
+obuspa_LDADD += $(openssl_LIBS) $(sqlite3_LIBS) $(libcurl_LIBS) $(zlib_LIBS) $(libmosquitto_LIBS) $(libwebsockets_LIBS) $(libuci_CFLAGS)
 
 # Create obuspa directory for usp.db etc on install
 # This depends on your prefix setting (default localstatedir=/usr/local/var/)

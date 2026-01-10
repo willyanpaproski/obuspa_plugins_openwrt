@@ -29,6 +29,7 @@ AC_ARG_ENABLE(tsan, [AS_HELP_STRING([--enable-tsan], [enable thread sanitizer])]
 # This also defines autotools magic variables for use in the .am files
 PKG_CHECK_MODULES([sqlite3], [sqlite3])
 PKG_CHECK_MODULES([zlib], [zlib])
+PKG_CHECK_MODULES([libuci], [libuci])
 
 AS_IF([test "x$enable_stomp" = "xno"], [
 	AC_DEFINE(DISABLE_STOMP)

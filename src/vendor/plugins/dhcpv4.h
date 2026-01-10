@@ -1,0 +1,8 @@
+#ifndef DHCPV4_H
+#define DHCPV4_H
+
+#include "usp_api.h"
+
+int GetLeaseTime(dm_req_t *req, char *buf, int len);
+
+#endif

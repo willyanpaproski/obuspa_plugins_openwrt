@@ -49,6 +49,7 @@
 #include "vendor_api.h"
 #include "usp_api.h"
 #include "plugins/deviceInfo.h"
+#include "plugins/dhcpv4.h"
 
 //Plugins
 //#include "plugins/deviceInfo.h"
@@ -67,6 +68,9 @@
 int VENDOR_Init(void)
 {
     int err = USP_ERR_OK;
+
+    err |= USP_REGISTER_Object("Device.DHCPv4.Server.Pool.{i}.", NULL, NULL, NULL, NULL, NULL, NULL);
+    err |= USP_REGISTER_VendorParam_ReadOnly("Device.DHCPv4.Server.Pool.{i}.LeaseTime", GetLeaseTime, DM_INT);
 
     err |= USP_REGISTER_VendorParam_ReadOnly("Device.DeviceInfo.X_IXC_Teste", GetTeste, DM_STRING);
 
@@ -89,6 +93,8 @@ int VENDOR_Init(void)
 **************************************************************************/
 int VENDOR_Start(void)
 {
+
+    USP_DM_InformInstance("Device.DHCPv4.Server.Pool.1.");
 
     return USP_ERR_OK;
 }

@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "name": "OpenWrt-X86-64",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/src/include",
+                "${workspaceFolder}/src/core",
+                "${workspaceFolder}/src/vendor",
+                "/home/ixcsoft/Documentos/projetos/openwrt_ixc/openwrt/staging_dir/target-x86_64_musl/usr/include/**"
+            ],
+            "defines": [
+                "ENABLE_MQTT",
+                "OBUSPA_LOCAL_STATE_DIR=\"/var/obuspa\""
+            ],
+            "compilerPath": "/home/ixcsoft/Documentos/projetos/openwrt_ixc/openwrt/staging_dir/toolchain-x86_64_gcc-14.3.0_musl/bin/x86_64-openwrt-linux-musl-gcc",
+            "cStandard": "c11",
+            "intelliSenseMode": "linux-gcc-x64"
+        }
+    ],
+    "version": 4
+}
