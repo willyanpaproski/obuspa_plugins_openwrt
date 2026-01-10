@@ -1,4 +1,4 @@
-#include "device.h"
+#include "deviceInfo.h"
 #include "usp_err_codes.h"
 #include <string.h>
 
