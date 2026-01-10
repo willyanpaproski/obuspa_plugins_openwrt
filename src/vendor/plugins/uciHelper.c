@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdio.h>
 
-int GetStringValue(char *path, char *fallback, char *buf, int len)
+int GetStringValue(char *path, char *buf, int len)
 {
     struct uci_context *ctx;
     struct uci_ptr ptr;
@@ -30,7 +30,7 @@ int GetStringValue(char *path, char *fallback, char *buf, int len)
         ptr.o->v.string == NULL ||
         ptr.o->v.string[0] == '\0')
     {
-        snprintf(buf, len, fallback);
+        snprintf(buf, len, "");
     }
     else
     {
