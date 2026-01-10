@@ -69,7 +69,7 @@ int VENDOR_Init(void)
 
     err |= USP_REGISTER_VendorParam_ReadOnly("Device.DeviceInfo.X_IXC_Teste", GetTeste, DM_STRING);
 
-    return USP_ERR_OK;
+    return err;
 }
 
 
