@@ -9,5 +9,5 @@ int GetLeaseTime(dm_req_t *req, char *buf, int len)
 {
     (void)req;
     
-    return GetStringValue("dhcp.lan.leasetime", "12h", buf, len);
+    return GetStringValue("dhcp.lan.leasetime", buf, len);
 }
