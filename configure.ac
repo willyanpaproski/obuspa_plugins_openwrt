@@ -1,8 +1,4 @@
-# -*- Autoconf -*-
-# Process this file with autoconf to produce a configure script.
-
 AC_PREREQ([2.63])
-
 AC_INIT([ob-uspagent],[1.0.0])
 AM_INIT_AUTOMAKE([foreign silent-rules subdir-objects -Wall -Werror -Wno-portability])
 AC_CONFIG_MACRO_DIR([m4])
@@ -11,7 +7,6 @@ AC_USE_SYSTEM_EXTENSIONS
 LT_PREREQ([2.2])
 LT_INIT([shared disable-static])
 
-# Checks for programs.
 AC_PROG_CC
 AM_PROG_CC_C_O
 
@@ -25,20 +20,24 @@ AC_ARG_ENABLE(hardening, [AS_HELP_STRING([--enable-hardening], [enable compiler 
 AC_ARG_ENABLE(asan, [AS_HELP_STRING([--enable-asan], [enable address sanitizer])],,enable_asan=no)
 AC_ARG_ENABLE(tsan, [AS_HELP_STRING([--enable-tsan], [enable thread sanitizer])],,enable_tsan=no)
 
-# Checks for libraries.
-# This also defines autotools magic variables for use in the .am files
 PKG_CHECK_MODULES([sqlite3], [sqlite3])
 PKG_CHECK_MODULES([zlib], [zlib])
-PKG_CHECK_MODULES([libuci], [libuci])
+
+# --- Fallback para libuci ---
+PKG_CHECK_MODULES([libuci], [libuci], [], [
+    AC_CHECK_LIB([uci], [uci_alloc_context], [
+        libuci_LIBS="-luci"
+        AC_SUBST([libuci_LIBS])
+    ], [
+        AC_MSG_ERROR([libuci not found])
+    ])
+])
 
 AS_IF([test "x$enable_stomp" = "xno"], [
 	AC_DEFINE(DISABLE_STOMP)
-],
-# ELSE
-[
+], [
     PKG_CHECK_MODULES([openssl], [openssl])
 ])
-
 
 AS_IF([test "x$enable_coap" = "xyes"], [
 	AC_DEFINE(ENABLE_COAP)
@@ -64,31 +63,20 @@ AS_IF([test "x$enable_uds" = "xyes"], [
 AS_IF([test "x$enable_bulkdata" = "xyes"], [
     PKG_CHECK_MODULES([libcurl], [libcurl])
     PKG_CHECK_MODULES([openssl], [openssl])
-],
-# ELSE
-[
+], [
 	AC_DEFINE(REMOVE_DEVICE_BULKDATA)
 ])
 
 AS_IF([test "x$enable_hardening" = "xyes"], [
-    # Enable compiler hardening flags - do not touch CFLAGS or LDFLAGS directly
-    CFLAGS_HARDENING="$CFLAGS_HARDENING -fstack-protector-strong"
-    CFLAGS_HARDENING="$CFLAGS_HARDENING -fPIE"
-    LDFLAGS_HARDENING="$LDFLAGS_HARDENING -pie"
-    LDFLAGS_HARDENING="$LDFLAGS_HARDENING -Wl,-z,relro"
-    LDFLAGS_HARDENING="$LDFLAGS_HARDENING -Wl,-z,now"
-    LDFLAGS_HARDENING="$LDFLAGS_HARDENING -Wl,-z,noexecstack"
-
-    # Fortify requires optimization
+    CFLAGS_HARDENING="-fstack-protector-strong -fPIE"
+    LDFLAGS_HARDENING="-pie -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack"
     CFLAGS_HARDENING="$CFLAGS_HARDENING -O2 -D_FORTIFY_SOURCE=2"
     AC_SUBST([CFLAGS_HARDENING])
     AC_SUBST([LDFLAGS_HARDENING])
 ])
 
-# Enable compiler sanitizer flags - do not touch CPPFLAGS, CFLAGS, or LDFLAGS directly
-# Sanitizer builds can sometimes trigger erroneous string truncation warnings, so silence them in CPPFLAGS
 if test "x$enable_asan" = "xyes" && test "x$enable_tsan" = "xyes"; then
-    AC_MSG_ERROR([--enable-asan and --enable-tsan are mutually exclusive. Please enable only one.])
+    AC_MSG_ERROR([--enable-asan and --enable-tsan are mutually exclusive.])
 fi
 
 AS_IF([test "x$enable_asan" = "xyes"], [
@@ -109,16 +97,9 @@ AS_IF([test "x$enable_tsan" = "xyes"], [
     AC_SUBST([LDFLAGS_SANITIZER])
 ])
 
-# Check which flavour of strerror_r is available on the target
 AC_FUNC_STRERROR_R
+AC_CHECK_HEADERS([malloc.h execinfo.h])
+AC_CHECK_FUNCS([mallinfo mallinfo2])
 
-AC_CHECK_HEADERS([malloc.h])
-AC_CHECK_HEADERS([execinfo.h])
-AC_CHECK_FUNCS([mallinfo])
-AC_CHECK_FUNCS([mallinfo2])
-
-# Generate Makefiles
 AC_CONFIG_FILES([Makefile])
-
-# Finally, generate top-level config.status.
 AC_OUTPUT
