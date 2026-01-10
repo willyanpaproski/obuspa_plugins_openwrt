@@ -114,7 +114,7 @@ SOURCES = src/core/main.c \
 
 
 obuspa_SOURCES = $(SOURCES)
-obuspa_CPPFLAGS = $(openssl_CFLAGS) $(sqlite3_CFLAGS) $(libcurl_CFLAGS) $(zlib_CFLAGS) $(libmosquitto_CFLAGS) $(libwebsockets_CFLAGS)
+obuspa_CPPFLAGS = $(openssl_CFLAGS) $(sqlite3_CFLAGS) $(libcurl_CFLAGS) $(zlib_CFLAGS) $(libmosquitto_CFLAGS) $(libwebsockets_CFLAGS) $(libuci_CFLAGS)
 obuspa_CPPFLAGS += -DOBUSPA_LOCAL_STATE_DIR=\"$(OBUSPA_LOCAL_STATE_DIR)\"
 obuspa_CPPFLAGS +=  $(AM_CPPFLAGS) \
                       -Werror \
@@ -129,7 +129,7 @@ obuspa_CPPFLAGS +=  $(AM_CPPFLAGS) \
 obuspa_LDFLAGS = $(AM_LDFLAGS) -rdynamic
 
 obuspa_LDADD = -lm -ldl -lpthread -lrt
-obuspa_LDADD += $(openssl_LIBS) $(sqlite3_LIBS) $(libcurl_LIBS) $(zlib_LIBS) $(libmosquitto_LIBS) $(libwebsockets_LIBS) $(libuci_CFLAGS)
+obuspa_LDADD += $(openssl_LIBS) $(sqlite3_LIBS) $(libcurl_LIBS) $(zlib_LIBS) $(libmosquitto_LIBS) $(libwebsockets_LIBS) $(libuci_LIBS)
 
 # Create obuspa directory for usp.db etc on install
 # This depends on your prefix setting (default localstatedir=/usr/local/var/)
