@@ -50,7 +50,7 @@
 #include "usp_api.h"
 
 //Plugins
-#include "plugins/deviceInfo.h"
+//#include "plugins/deviceInfo.h"
 
 /*********************************************************************//**
 **
@@ -65,11 +65,13 @@
 **************************************************************************/
 int VENDOR_Init(void)
 {
-    int err = USP_ERR_OK;
+    // int err = USP_ERR_OK;
 
-    err |= USP_REGISTER_VendorParam_ReadOnly("Device.DeviceInfo.X_IXC_Teste", GetTeste, DM_STRING);
+    // err |= USP_REGISTER_VendorParam_ReadOnly("Device.DeviceInfo.X_IXC_Teste", GetTeste, DM_STRING);
 
-    return err;
+    // return err;
+
+    return USP_ERR_OK;
 }
 
 
