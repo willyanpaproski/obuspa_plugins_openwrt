@@ -12,7 +12,6 @@ int GetNtpServerAddress(dm_req_t *req, char *buf, int len)
 
     if (req == NULL ||
         req->inst == NULL ||
-        req->inst->instances == NULL ||
         req->inst->order < 1)
     {
         buf[0] = '\0';

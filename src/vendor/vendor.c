@@ -72,8 +72,9 @@ int VENDOR_Init(void)
 
     err |= USP_REGISTER_Object("Device.DHCPv4.Server.Pool.{i}.", NULL, NULL, NULL, NULL, NULL, NULL);
     err |= USP_REGISTER_VendorParam_ReadOnly("Device.DHCPv4.Server.Pool.{i}.LeaseTime", GetLeaseTime, DM_STRING);
-    USP_REGISTER_Object("Device.Time.NTPServer.{i}.", NULL, NULL, NULL, NULL, NULL, NULL);
-    USP_REGISTER_VendorParam_ReadOnly(
+
+    err |= USP_REGISTER_Object("Device.Time.NTPServer.{i}.", NULL, NULL, NULL, NULL, NULL, NULL);
+    err |= USP_REGISTER_VendorParam_ReadOnly(
         "Device.Time.NTPServer.{i}.Address",
         GetNtpServerAddress,
         DM_STRING
