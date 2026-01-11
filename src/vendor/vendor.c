@@ -67,16 +67,14 @@ int VENDOR_Init(void)
 {
     int err = USP_ERR_OK;
 
+    //DHCPv4
     err |= USP_REGISTER_Object("Device.DHCPv4.Server.Pool.{i}.", NULL, NULL, NULL, NULL, NULL, NULL);
     err |= USP_REGISTER_VendorParam_ReadOnly("Device.DHCPv4.Server.Pool.{i}.LeaseTime", GetLeaseTime, DM_STRING);
 
-    err |= USP_REGISTER_Object("Device.Time.NTPServer.{i}.", NULL, NULL, NULL, NULL, NULL, NULL);
-    err |= USP_REGISTER_VendorParam_ReadOnly(
-        "Device.Time.NTPServer.{i}.Address",
-        GetNtpServerAddress,
-        DM_STRING
-    );
+    //NTP
+    err |= USP_REGISTER_VendorParam_ReadOnly("Device.Time.NTPServer1", GetNTPServer1, DM_STRING);
 
+    //DeviceInfo
     err |= USP_REGISTER_VendorParam_ReadOnly("Device.DeviceInfo.X_IXC_Teste", GetTeste, DM_STRING);
 
     return err;
@@ -100,10 +98,6 @@ int VENDOR_Start(void)
 {
 
     USP_DM_InformInstance("Device.DHCPv4.Server.Pool.1.");
-    USP_DM_InformInstance("Device.Time.NTPServer.1.");
-    USP_DM_InformInstance("Device.Time.NTPServer.2.");
-    USP_DM_InformInstance("Device.Time.NTPServer.3.");
-    USP_DM_InformInstance("Device.Time.NTPServer.4.");
 
     return USP_ERR_OK;
 }
