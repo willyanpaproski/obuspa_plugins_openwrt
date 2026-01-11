@@ -48,7 +48,6 @@
 #include "vendor_defs.h"
 #include "vendor_api.h"
 #include "usp_api.h"
-#include "plugins/deviceInfo.h"
 #include "plugins/dhcpv4.h"
 #include "plugins/ntp.h"
 
@@ -74,9 +73,6 @@ int VENDOR_Init(void)
     //NTP
     err |= USP_REGISTER_VendorParam_ReadOnly("Device.Time.NTPServer1", GetNTPServer1, DM_STRING);
     err |= USP_REGISTER_VendorParam_ReadOnly("Device.Time.NTPServer2", GetNTPServer2, DM_STRING);
-
-    //DeviceInfo
-    err |= USP_REGISTER_VendorParam_ReadOnly("Device.DeviceInfo.X_IXC_Teste", GetTeste, DM_STRING);
 
     return err;
 }
