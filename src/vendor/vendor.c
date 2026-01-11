@@ -71,8 +71,8 @@ int VENDOR_Init(void)
     err |= USP_REGISTER_VendorParam_ReadOnly("Device.DHCPv4.Server.Pool.{i}.LeaseTime", GetLeaseTime, DM_STRING);
 
     //NTP
-    err |= USP_REGISTER_VendorParam_ReadOnly("Device.Time.NTPServer1", GetNTPServer1, DM_STRING);
-    err |= USP_REGISTER_VendorParam_ReadOnly("Device.Time.NTPServer2", GetNTPServer2, DM_STRING);
+    err |= USP_REGISTER_VendorParam_ReadWrite("Device.Time.NTPServer1", GetNTPServer1, SetNTPServer1, NULL, DM_STRING);
+    err |= USP_REGISTER_VendorParam_ReadWrite("Device.Time.NTPServer2", GetNTPServer2, SetNTPServer2, NULL, DM_STRING);
 
     return err;
 }

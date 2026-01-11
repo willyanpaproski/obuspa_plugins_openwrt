@@ -92,3 +92,73 @@ int GetListValues(const char *path,
     uci_free_context(ctx);
     return USP_ERR_OK;
 }
+
+int SetStringValue(const char *path, const char *value)
+{
+    struct uci_context *ctx;
+    struct uci_ptr ptr;
+    char path_copy[256];
+    int ret = USP_ERR_OK;
+
+    if (!path || !value) return USP_ERR_INTERNAL_ERROR;
+
+    ctx = uci_alloc_context();
+    if (!ctx) return USP_ERR_INTERNAL_ERROR;
+
+    strncpy(path_copy, path, sizeof(path_copy) - 1);
+    path_copy[sizeof(path_copy) - 1] = '\0';
+
+    if (uci_lookup_ptr(ctx, &ptr, path_copy, true) != UCI_OK) {
+        ret = USP_ERR_INTERNAL_ERROR;
+        goto cleanup;
+    }
+
+    ptr.value = value;
+
+    if (uci_set(ctx, &ptr) != UCI_OK) {
+        ret = USP_ERR_INTERNAL_ERROR;
+        goto cleanup;
+    }
+
+    uci_commit(ctx, &ptr.p, false);
+
+cleanup:
+    uci_free_context(ctx);
+    return ret;
+}
+
+int SetListValues(const char *path, char values[][64], int count)
+{
+    struct uci_context *ctx;
+    struct uci_ptr ptr;
+    char path_copy[256];
+    int ret = USP_ERR_OK;
+
+    ctx = uci_alloc_context();
+    if (!ctx) return USP_ERR_INTERNAL_ERROR;
+
+    strncpy(path_copy, path, sizeof(path_copy) - 1);
+    path_copy[sizeof(path_copy) - 1] = '\0';
+
+    if (uci_lookup_ptr(ctx, &ptr, path_copy, true) != UCI_OK) {
+        ret = USP_ERR_INTERNAL_ERROR;
+        goto cleanup;
+    }
+
+    uci_delete(ctx, &ptr);
+
+    for (int i = 0; i < count; i++) {
+        memset(&ptr, 0, sizeof(ptr));
+        strncpy(path_copy, path, sizeof(path_copy) - 1); 
+        uci_lookup_ptr(ctx, &ptr, path_copy, true);
+        
+        ptr.value = values[i];
+        uci_add_list(ctx, &ptr);
+    }
+
+    uci_commit(ctx, &ptr.p, false);
+
+cleanup:
+    uci_free_context(ctx);
+    return ret;
+}
