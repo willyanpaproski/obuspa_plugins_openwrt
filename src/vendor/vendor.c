@@ -50,6 +50,7 @@
 #include "usp_api.h"
 #include "plugins/deviceInfo.h"
 #include "plugins/dhcpv4.h"
+#include "plugins/ntp.h"
 
 //Plugins
 //#include "plugins/deviceInfo.h"
@@ -71,6 +72,12 @@ int VENDOR_Init(void)
 
     err |= USP_REGISTER_Object("Device.DHCPv4.Server.Pool.{i}.", NULL, NULL, NULL, NULL, NULL, NULL);
     err |= USP_REGISTER_VendorParam_ReadOnly("Device.DHCPv4.Server.Pool.{i}.LeaseTime", GetLeaseTime, DM_STRING);
+    USP_REGISTER_Object("Device.Time.NTPServer.{i}.", NULL, NULL, NULL, NULL, NULL, NULL);
+    USP_REGISTER_VendorParam_ReadOnly(
+        "Device.Time.NTPServer.{i}.Address",
+        GetNtpServerAddress,
+        DM_STRING
+    );
 
     err |= USP_REGISTER_VendorParam_ReadOnly("Device.DeviceInfo.X_IXC_Teste", GetTeste, DM_STRING);
 
@@ -95,6 +102,10 @@ int VENDOR_Start(void)
 {
 
     USP_DM_InformInstance("Device.DHCPv4.Server.Pool.1.");
+    USP_DM_InformInstance("Device.Time.NTPServer.1.");
+    USP_DM_InformInstance("Device.Time.NTPServer.2.");
+    USP_DM_InformInstance("Device.Time.NTPServer.3.");
+    USP_DM_InformInstance("Device.Time.NTPServer.4.");
 
     return USP_ERR_OK;
 }
