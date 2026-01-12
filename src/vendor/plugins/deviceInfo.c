@@ -11,3 +11,10 @@ int GetHostname(dm_req_t *req, char *buf, int len)
 
     return GetStringValue("system.@system[0].hostname", buf, len);
 }
+
+int SetHostname(dm_req_t *req, char *buf)
+{
+    if (buf == NULL) return USP_ERR_INTERNAL_ERROR;
+
+    return SetStringValue("system.@system[0].hostname", buf);
+}
