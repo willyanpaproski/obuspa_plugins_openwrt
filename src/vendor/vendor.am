@@ -1,6 +1,7 @@
 # Source files in vendor
 SOURCES += src/vendor/vendor.c \
                   src/vendor/vendor_factory_reset_example.c \
+                  src/vendor/utils.c \
                   src/vendor/plugins/deviceInfo.c \
                   src/vendor/plugins/dhcpv4.c \
                   src/vendor/plugins/ntp.c \
