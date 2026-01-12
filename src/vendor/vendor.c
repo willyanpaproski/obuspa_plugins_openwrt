@@ -50,6 +50,7 @@
 #include "usp_api.h"
 #include "plugins/dhcpv4.h"
 #include "plugins/ntp.h"
+#include "plugins/deviceInfo.h"
 
 /*********************************************************************//**
 **
@@ -73,6 +74,9 @@ int VENDOR_Init(void)
     //NTP
     err |= USP_REGISTER_VendorParam_ReadWrite("Device.Time.NTPServer1", GetNTPServer1, SetNTPServer1, NULL, DM_STRING);
     err |= USP_REGISTER_VendorParam_ReadWrite("Device.Time.NTPServer2", GetNTPServer2, SetNTPServer2, NULL, DM_STRING);
+
+    //DeviceInfo
+    err |= USP_REGISTER_VendorParam_ReadOnly("Device.DeviceInfo.X_IXC_Hostname", GetHostname, DM_STRING);
 
     return err;
 }
