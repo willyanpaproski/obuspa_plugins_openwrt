@@ -27,3 +27,22 @@ int GetLeaseTime(dm_req_t *req, char *buf, int len)
 
     return USP_ERR_OK;
 }
+
+int GetGateway(dm_req_t *req, char *buf, int len)
+{
+    char gateway[32];
+    
+    if (GetStringValue("get network.lan.ipaddr", gateway, sizeof(gateway)) != USP_ERR_OK) {
+        return USP_ERR_INTERNAL_ERROR;
+    }
+
+    char *slash = strchr(gateway, '/');
+
+    if (slash != NULL) {
+        *slash = '\0';
+    }
+
+    snprintf(buf, len, "%s", gateway);
+
+    return USP_ERR_OK;
+}

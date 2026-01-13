@@ -4,5 +4,6 @@
 #include "usp_api.h"
 
 int GetLeaseTime(dm_req_t *req, char *buf, int len);
+int GetGateway(dm_req_t *req, char *buf, int len);
 
 #endif
