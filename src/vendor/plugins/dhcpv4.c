@@ -30,19 +30,23 @@ int GetLeaseTime(dm_req_t *req, char *buf, int len)
 
 int GetGateway(dm_req_t *req, char *buf, int len)
 {
-    char gateway[32];
-    
-    if (GetStringValue("get network.lan.ipaddr", gateway, sizeof(gateway)) != USP_ERR_OK) {
+    char dhcpOptions[16][64] = {0};
+    int count = 0;
+    bool found = false;
+
+    if (GetListValues("dhcp.lan.dhcp_option", dhcpOptions, 16, 64, &count) != USP_ERR_OK) {
         return USP_ERR_INTERNAL_ERROR;
     }
 
-    char *slash = strchr(gateway, '/');
-
-    if (slash != NULL) {
-        *slash = '\0';
+    for (int i = 0; i < count; i++) {
+        if (strncmp(dhcpOptions[i], "3,", 2) == 0) {
+            snprintf(buf, len, "%s", dhcpOptions[i] + 2);
+            found = true;
+            break;
+        }
     }
 
-    snprintf(buf, len, "%s", gateway);
+    if (!found) buf[0] = '\0';
 
     return USP_ERR_OK;
 }
