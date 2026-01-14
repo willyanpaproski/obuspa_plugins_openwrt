@@ -32,12 +32,15 @@ int SetLeaseTime(dm_req_t *req, char *buf)
 {  
     if (buf == NULL) return USP_ERR_INTERNAL_ERROR;
 
-    int ret = SetStringValue("dhcp.lan.leasetime", strcat(buf, "s"));
+    char fullValue[32];
+
+    snprintf(fullValue, sizeof(fullValue), "%ss", buf);
+
+    int ret = SetStringValue("dhcp.lan.leasetime", fullValue);
 
     if (ret != USP_ERR_OK) return USP_ERR_INTERNAL_ERROR;
 
     system("/etc/init.d/dnsmasq restart");
-
     return ret;
 }
 
@@ -76,7 +79,7 @@ int SetGateway(dm_req_t *req, char *buf)
 
     for (int i = 0; i < count; i++) {
         if (strncmp(dhcpOptions[i], "3,", 2) == 0) {
-            strncpy(strcat("3,", dhcpOptions[i]), buf, 63);
+            snprintf(dhcpOptions[i], 64, "3,%s", buf);
             found = true;
             break;
         }
@@ -128,7 +131,7 @@ int SetSubnetMask(dm_req_t *req, char *buf)
 
     for (int i = 0; i < count; i++) {
         if (strncmp(dhcpOptions[i], "1,", 2) == 0) {
-            strncpy(strcat("1,", dhcpOptions[i]), buf, 63);
+            snprintf(dhcpOptions[i], 64, "1,%s", buf);
             found = true;
             break;
         }
