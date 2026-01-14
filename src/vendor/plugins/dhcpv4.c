@@ -28,6 +28,19 @@ int GetLeaseTime(dm_req_t *req, char *buf, int len)
     return USP_ERR_OK;
 }
 
+int SetLeaseTime(dm_req_t *req, char *buf) 
+{  
+    if (buf == NULL) return USP_ERR_INTERNAL_ERROR;
+
+    int ret = SetStringValue("dhcp.lan.leasetime", strcat(buf, "s"));
+
+    if (ret != USP_ERR_OK) return USP_ERR_INTERNAL_ERROR;
+
+    system("/etc/init.d/dnsmasq restart");
+
+    return ret;
+}
+
 int GetGateway(dm_req_t *req, char *buf, int len)
 {
     char dhcpOptions[16][64] = {0};
@@ -71,7 +84,13 @@ int SetGateway(dm_req_t *req, char *buf)
 
     if (!found) return USP_ERR_INTERNAL_ERROR;
 
-    return SetListValues("dhcp.lan.dhcp_option", dhcpOptions, count);
+    int ret = SetListValues("dhcp.lan.dhcp_option", dhcpOptions, count);
+
+    if (ret != USP_ERR_OK) return USP_ERR_INTERNAL_ERROR;
+
+    system("/etc/init.d/dnsmasq restart");
+
+    return ret;
 }
 
 int GetSubnetMask(dm_req_t *req, char *buf, int len)
@@ -117,5 +136,11 @@ int SetSubnetMask(dm_req_t *req, char *buf)
 
     if (!found) return USP_ERR_INTERNAL_ERROR;
 
-    return SetListValues("dhcp.lan.dhcp_option", dhcpOptions, count);
+    int ret = SetListValues("dhcp.lan.dhcp_option", dhcpOptions, count);
+
+    if (ret != USP_ERR_OK) return USP_ERR_INTERNAL_ERROR;
+
+    system("/etc/init.d/dnsmasq restart");
+
+    return ret;
 }
