@@ -57,7 +57,7 @@ int GetSubnetMask(dm_req_t *req, char *buf, int len)
     int count = 0;
     bool found = false;
 
-    if (GetListValues("dhcp.lan.dhcp_options", dhcpOptions, 16, 64, &count) != USP_ERR_OK) {
+    if (GetListValues("dhcp.lan.dhcp_option", dhcpOptions, 16, 64, &count) != USP_ERR_OK) {
         return USP_ERR_INTERNAL_ERROR;
     }
 
