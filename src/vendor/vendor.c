@@ -68,7 +68,7 @@ int VENDOR_Init(void)
     int err = USP_ERR_OK;
 
     //DHCPv4
-    err |= USP_REGISTER_Object("Device.DHCPv4.Server.Pool.{i}.", NULL, NULL, NULL, NULL, NULL, NULL);
+    err |= USP_REGISTER_Object("Device.DHCPv4.Server.Pool.{i}.", ValidateAddPool, NULL, NULL, ValidateRemovePool, NULL, NULL);
     err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Pool.{i}.LeaseTime", GetLeaseTime, SetLeaseTime, NULL, DM_STRING);
     err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Pool.{i}.IPRouters", GetGateway, SetGateway, NULL, DM_STRING);
     err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Pool.{i}.SubnetMask", GetSubnetMask, SetSubnetMask, NULL, DM_STRING);

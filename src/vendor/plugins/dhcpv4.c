@@ -147,3 +147,13 @@ int SetSubnetMask(dm_req_t *req, char *buf)
 
     return ret;
 }
+
+int ValidateAddPool(dm_req_t *req)
+{
+    return USP_ERR_OBJECT_NOT_CREATABLE;
+}
+
+int ValidateRemovePool(dm_req_t *req)
+{
+    return USP_ERR_OBJECT_NOT_DELETABLE;
+}
