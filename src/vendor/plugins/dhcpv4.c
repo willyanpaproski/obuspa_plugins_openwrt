@@ -50,3 +50,26 @@ int GetGateway(dm_req_t *req, char *buf, int len)
 
     return USP_ERR_OK;
 }
+
+int GetSubnetMask(dm_req_t *req, char *buf, int len)
+{
+    char dhcpOptions[16][64] = {0};
+    int count = 0;
+    bool found = false;
+
+    if (GetListValues("dhcp.lan.dhcp_options", dhcpOptions, 16, 64, &count) != USP_ERR_OK) {
+        return USP_ERR_INTERNAL_ERROR;
+    }
+
+    for (int i = 0; i < count; i++) {
+        if (strncmp(dhcpOptions[i], "1,", 2) == 0) {
+            snprintf(buf, len, "%s", dhcpOptions[i] + 2);
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) buf[0] = '\0';
+
+    return USP_ERR_OK;
+}
