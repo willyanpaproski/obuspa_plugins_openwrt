@@ -148,10 +148,10 @@ int SetSubnetMask(dm_req_t *req, char *buf)
     return ret;
 }
 
-int GetStartIP(dm_req_t *req, char *buf, int len)
+int GetMinAddress(dm_req_t *req, char *buf, int len)
 {
     char dhcpOptions[16][64] = {0};
-    char startIpOctet[64];
+    char minIpAddressOctet[64];
     char *gatewayIp = NULL;
     int count = 0;
     bool found = false;
@@ -170,7 +170,7 @@ int GetStartIP(dm_req_t *req, char *buf, int len)
 
     if (!found) return USP_ERR_INTERNAL_ERROR;
 
-    if (GetStringValue("dhcp.lan.start", startIpOctet, sizeof(startIpOctet)) != USP_ERR_OK) {
+    if (GetStringValue("dhcp.lan.start", minIpAddressOctet, sizeof(minIpAddressOctet)) != USP_ERR_OK) {
         return USP_ERR_INTERNAL_ERROR;
     }
 
@@ -178,7 +178,45 @@ int GetStartIP(dm_req_t *req, char *buf, int len)
 
     if (lastDot != NULL) {
         int prefixLen = (int)(lastDot - gatewayIp) + 1;       
-        snprintf(buf, len, "%.*s%s", prefixLen, gatewayIp, startIpOctet);
+        snprintf(buf, len, "%.*s%s", prefixLen, gatewayIp, minIpAddressOctet);
+    } else {
+        return USP_ERR_INTERNAL_ERROR;
+    }
+
+    return USP_ERR_OK;
+}
+
+int GetMaxAddress(dm_req_t *req, char *buf, int len) 
+{
+char dhcpOptions[16][64] = {0};
+    char maxIpAddressOctet[64];
+    char *gatewayIp = NULL;
+    int count = 0;
+    bool found = false;
+    
+    if (GetListValues("dhcp.lan.dhcp_option", dhcpOptions, 16, 64, &count) != USP_ERR_OK) {
+        return USP_ERR_INTERNAL_ERROR;
+    }
+
+    for (int i = 0; i < count; i++) {
+        if (strncmp(dhcpOptions[i], "3,", 2) == 0) {
+            gatewayIp = dhcpOptions[i] + 2;
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) return USP_ERR_INTERNAL_ERROR;
+
+    if (GetStringValue("dhcp.lan.limit", maxIpAddressOctet, sizeof(maxIpAddressOctet)) != USP_ERR_OK) {
+        return USP_ERR_INTERNAL_ERROR;
+    }
+
+    char *lastDot = strrchr(gatewayIp, '.');
+
+    if (lastDot != NULL) {
+        int prefixLen = (int)(lastDot - gatewayIp) + 1;       
+        snprintf(buf, len, "%.*s%s", prefixLen, gatewayIp, maxIpAddressOctet);
     } else {
         return USP_ERR_INTERNAL_ERROR;
     }

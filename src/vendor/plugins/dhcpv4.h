@@ -9,7 +9,8 @@ int GetGateway(dm_req_t *req, char *buf, int len);
 int SetGateway(dm_req_t *req, char *buf);
 int GetSubnetMask(dm_req_t *req, char *buf, int len);
 int SetSubnetMask(dm_req_t *req, char *buf);
-int GetStartIP(dm_req_t *req, char *buf, int len);
+int GetMinAddress(dm_req_t *req, char *buf, int len);
+int GetMaxAddress(dm_req_t *req, char *buf, int len);
 int ValidateAddPool(dm_req_t *req);
 int ValidateRemovePool(dm_req_t *req);
 
