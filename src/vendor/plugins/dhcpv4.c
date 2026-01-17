@@ -148,6 +148,44 @@ int SetSubnetMask(dm_req_t *req, char *buf)
     return ret;
 }
 
+int GetStartIP(dm_req_t *req, char *buf, int len)
+{
+    char dhcpOptions[16][64] = {0};
+    char startIpOctet[64];
+    char *gatewayIp = NULL;
+    int count = 0;
+    bool found = false;
+    
+    if (GetListValues("dhcp.lan.dhcp_option", dhcpOptions, 16, 64, &count) != USP_ERR_OK) {
+        return USP_ERR_INTERNAL_ERROR;
+    }
+
+    for (int i = 0; i < count; i++) {
+        if (strncmp(dhcpOptions[i], "3,", 2) == 0) {
+            gatewayIp = dhcpOptions[i] + 2;
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) return USP_ERR_INTERNAL_ERROR;
+
+    if (GetStringValue("dhcp.lan.start", startIpOctet, sizeof(startIpOctet)) != USP_ERR_OK) {
+        return USP_ERR_INTERNAL_ERROR;
+    }
+
+    char *lastDot = strrchr(gatewayIp, '.');
+
+    if (lastDot != NULL) {
+        int prefixLen = (int)(lastDot - gatewayIp) + 1;       
+        snprintf(buf, len, "%.*s%s", prefixLen, gatewayIp, startIpOctet);
+    } else {
+        return USP_ERR_INTERNAL_ERROR;
+    }
+
+    return USP_ERR_OK;
+}
+
 int ValidateAddPool(dm_req_t *req)
 {
     return USP_ERR_OBJECT_NOT_CREATABLE;
