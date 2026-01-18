@@ -17,6 +17,7 @@ int GetDnsServers(dm_req_t *req, char *buf, int len);
 int SetDnsServers(dm_req_t *req, char *buf);
 int GetDomainName(dm_req_t *req, char *buf, int len);
 int SetDomainName(dm_req_t *req, char *buf);
+int GetPoolEnabled(dm_req_t *req, char *buf, int len);
 int ValidateAddPool(dm_req_t *req);
 int ValidateRemovePool(dm_req_t *req);
 

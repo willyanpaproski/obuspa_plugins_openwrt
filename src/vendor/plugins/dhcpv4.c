@@ -379,6 +379,23 @@ int SetDomainName(dm_req_t *req, char *buf)
     return USP_ERR_OK;
 }
 
+int GetPoolEnabled(dm_req_t *req, char *buf, int len)
+{
+    char enableVal[64];
+    
+    if (GetStringValue("dhcp.lan.ignore", enableVal, sizeof(enableVal)) != USP_ERR_OK) {
+        return USP_ERR_INTERNAL_ERROR;
+    }
+
+    if (enableVal == "1") {
+        snprintf(buf, len, "false", enableVal);
+    } else {
+        snprintf(buf, len, "true", enableVal);
+    }
+
+    return USP_ERR_OK;
+}
+
 int ValidateAddPool(dm_req_t *req)
 {
     return USP_ERR_OBJECT_NOT_CREATABLE;
