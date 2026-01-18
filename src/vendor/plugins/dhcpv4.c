@@ -186,6 +186,25 @@ int GetMinAddress(dm_req_t *req, char *buf, int len)
     return USP_ERR_OK;
 }
 
+int SetMinAddress(dm_req_t *req, char *buf)
+{
+    if (buf == NULL || buf[0] == '\0') return USP_ERR_INTERNAL_ERROR;
+
+    int octet = GetLastOctet(buf);
+    if (octet < 0 || octet > 255) return USP_ERR_INVALID_VALUE;
+
+    char value[8];
+    snprintf(value, sizeof(value), "%d", octet);
+
+    if (SetStringValue("dhcp.lan.start", value) != USP_ERR_OK) {
+        return USP_ERR_INTERNAL_ERROR;
+    }
+
+    system("/etc/init.d/dnsmasq restart");
+    
+    return USP_ERR_OK;
+}
+
 int GetMaxAddress(dm_req_t *req, char *buf, int len) 
 {
     char dhcpOptions[16][64] = {0};
@@ -221,6 +240,25 @@ int GetMaxAddress(dm_req_t *req, char *buf, int len)
         return USP_ERR_INTERNAL_ERROR;
     }
 
+    return USP_ERR_OK;
+}
+
+int SetMaxAddress(dm_req_t *req, char *buf)
+{
+    if (buf == NULL || buf[0] == '\0') return USP_ERR_INTERNAL_ERROR;
+
+    int octet = GetLastOctet(buf);
+    if (octet < 0 || octet > 255) return USP_ERR_INVALID_VALUE;
+
+    char value[8];
+    snprintf(value, sizeof(value), "%d", octet);
+
+    if (SetStringValue("dhcp.lan.limit", value) != USP_ERR_OK) {
+        return USP_ERR_INTERNAL_ERROR;
+    }
+
+    system("/etc/init.d/dnsmasq restart");
+    
     return USP_ERR_OK;
 }
 
@@ -342,4 +380,11 @@ int ValidateAddPool(dm_req_t *req)
 int ValidateRemovePool(dm_req_t *req)
 {
     return USP_ERR_OBJECT_NOT_DELETABLE;
+}
+
+int GetLastOctet(char *ip) {
+    if (!ip) return -1;
+    char *lastDot = strrchr(ip, '.');
+    if (!lastDot) return -1;
+    return atoi(lastDot + 1);
 }

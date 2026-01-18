@@ -74,8 +74,8 @@ int VENDOR_Init(void)
     err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Pool.{i}.SubnetMask", GetSubnetMask, SetSubnetMask, NULL, DM_STRING);
     err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Pool.{i}.DNSServers", GetDnsServers, SetDnsServers, NULL, DM_STRING);
     err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Pool.{i}.DomainName", GetDomainName, SetDomainName, NULL, DM_STRING);
-    err |= USP_REGISTER_VendorParam_ReadOnly("Device.DHCPv4.Server.Pool.{i}.MinAddress", GetMinAddress, DM_STRING);
-    err |= USP_REGISTER_VendorParam_ReadOnly("Device.DHCPv4.Server.Pool.{i}.MaxAddress", GetMaxAddress, DM_STRING);
+    err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Pool.{i}.MinAddress", GetMinAddress, SetMinAddress, NULL, DM_STRING);
+    err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Pool.{i}.MaxAddress", GetMaxAddress, SetMaxAddress, NULL, DM_STRING);
     err |= USP_REGISTER_Param_Constant("Device.DHCPv4.Server.Pool.{i}.Alias", "cpe-dhcpv4pool", DM_STRING);
 
     //NTP
