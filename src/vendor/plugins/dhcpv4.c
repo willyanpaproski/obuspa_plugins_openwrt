@@ -6,6 +6,13 @@
 #include <string.h>
 #include <stdio.h>
 
+int GetLastOctet(char *ip) {
+    if (!ip) return -1;
+    char *lastDot = strrchr(ip, '.');
+    if (!lastDot) return -1;
+    return atoi(lastDot + 1);
+}
+
 int GetLeaseTime(dm_req_t *req, char *buf, int len)
 {
     char uciVal[64];
@@ -380,11 +387,4 @@ int ValidateAddPool(dm_req_t *req)
 int ValidateRemovePool(dm_req_t *req)
 {
     return USP_ERR_OBJECT_NOT_DELETABLE;
-}
-
-int GetLastOctet(char *ip) {
-    if (!ip) return -1;
-    char *lastDot = strrchr(ip, '.');
-    if (!lastDot) return -1;
-    return atoi(lastDot + 1);
 }
