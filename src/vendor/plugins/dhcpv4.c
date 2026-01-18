@@ -188,7 +188,7 @@ int GetMinAddress(dm_req_t *req, char *buf, int len)
 
 int GetMaxAddress(dm_req_t *req, char *buf, int len) 
 {
-char dhcpOptions[16][64] = {0};
+    char dhcpOptions[16][64] = {0};
     char maxIpAddressOctet[64];
     char *gatewayIp = NULL;
     int count = 0;
@@ -222,6 +222,58 @@ char dhcpOptions[16][64] = {0};
     }
 
     return USP_ERR_OK;
+}
+
+int GetDnsServers(dm_req_t *req, char *buf, int len)
+{
+    char dhcpOptions[16][64] = {0};
+    int count = 0;
+    bool found = false;
+
+    if (GetListValues("dhcp.lan.dhcp_option", dhcpOptions, 16, 64, &count) != USP_ERR_OK) {
+        return USP_ERR_INTERNAL_ERROR;
+    }
+
+    for (int i = 0; i < count; i++) {
+        if (strncmp(dhcpOptions[i], "6,", 2) == 0) {
+            snprintf(buf, len, "%s", dhcpOptions[i] + 2);
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) buf[0] = '\0';
+
+    return USP_ERR_OK;
+}
+
+int SetDnsServers(dm_req_t *req, char *buf)
+{
+    char dhcpOptions[16][64] = {0};
+    int count = 0;
+    bool found = false;
+
+    if (GetListValues("dhcp.lan.dhcp_option", dhcpOptions, 16, 64, &count) != USP_ERR_OK) {
+        return USP_ERR_INTERNAL_ERROR;
+    }
+
+    for (int i = 0; i < count; i++) {
+        if (strncmp(dhcpOptions[i], "6,", 2) == 0) {
+            snprintf(dhcpOptions[i], 64, "6,%s", buf);
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) return USP_ERR_INTERNAL_ERROR;
+
+    int ret = SetListValues("dhcp.lan.dhcp_option", dhcpOptions, count);
+
+    if (ret != USP_ERR_OK) return USP_ERR_INTERNAL_ERROR;
+
+    system("/etc/init.d/dnsmasq restart");
+
+    return ret;
 }
 
 int ValidateAddPool(dm_req_t *req)
