@@ -13,6 +13,8 @@ int GetMinAddress(dm_req_t *req, char *buf, int len);
 int GetMaxAddress(dm_req_t *req, char *buf, int len);
 int GetDnsServers(dm_req_t *req, char *buf, int len);
 int SetDnsServers(dm_req_t *req, char *buf);
+int GetDomainName(dm_req_t *req, char *buf, int len);
+int SetDomainName(dm_req_t *req, char *buf);
 int ValidateAddPool(dm_req_t *req);
 int ValidateRemovePool(dm_req_t *req);
 

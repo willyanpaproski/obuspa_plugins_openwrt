@@ -276,6 +276,64 @@ int SetDnsServers(dm_req_t *req, char *buf)
     return ret;
 }
 
+int GetDomainName(dm_req_t *req, char *buf, int len) 
+{
+    char dhcpOptions[16][64] = {0};
+    int count = 0;
+    bool found = false;
+
+    if (GetListValues("dhcp.lan.dhcp_option", dhcpOptions, 16, 64, &count) != USP_ERR_OK) {
+        return USP_ERR_INTERNAL_ERROR;
+    }
+
+    for (int i = 0; i < count; i++) {
+        if (strncmp(dhcpOptions[i], "15,", 2) == 0) {
+            snprintf(buf, len, "%s", dhcpOptions[i] + 2);
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) buf[0] = '\0';
+
+    return USP_ERR_OK;
+}
+
+int SetDomainName(dm_req_t *req, char *buf)
+{
+    char dhcpOptions[16][64] = {0};
+    char newOptions[16][64] = {0};
+    int count = 0;
+    int newCount = 0;
+    bool found = false;
+
+    if (GetListValues("dhcp.lan.dhcp_option", dhcpOptions, 16, 64, &count) != USP_ERR_OK) {
+        return USP_ERR_INTERNAL_ERROR;
+    }
+
+    for (int i = 0; i < count; i++) {
+        if (strncmp(dhcpOptions[i], "15,", 3) == 0) {
+            if (buf != NULL && buf[0] != '\0') {
+                snprintf(newOptions[newCount++], 64, "15,%s", buf);
+                found = true;
+            }
+        } else {
+            strncpy(newOptions[newCount++], dhcpOptions[i], 63);
+        }
+    }
+
+    if (!found && buf != NULL && buf[0] != '\0') {
+        snprintf(newOptions[newCount++], 64, "15,%s", buf);
+    }
+
+    if (SetListValues("dhcp.lan.dhcp_option", newOptions, newCount) != USP_ERR_OK) {
+        return USP_ERR_INTERNAL_ERROR;
+    }
+
+    system("/etc/init.d/dnsmasq restart");
+    return USP_ERR_OK;
+}
+
 int ValidateAddPool(dm_req_t *req)
 {
     return USP_ERR_OBJECT_NOT_CREATABLE;
