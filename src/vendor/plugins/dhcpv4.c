@@ -332,7 +332,7 @@ int GetDomainName(dm_req_t *req, char *buf, int len)
     }
 
     for (int i = 0; i < count; i++) {
-        if (strncmp(dhcpOptions[i], "15,", 2) == 0) {
+        if (strncmp(dhcpOptions[i], "15,", 3) == 0) {
             snprintf(buf, len, "%s", dhcpOptions[i] + 2);
             found = true;
             break;
@@ -387,10 +387,10 @@ int GetPoolEnabled(dm_req_t *req, char *buf, int len)
         return USP_ERR_INTERNAL_ERROR;
     }
 
-    if (enableVal == "1") {
-        snprintf(buf, len, "false", enableVal);
+    if (strcmp(enableVal, "1") == 0) {
+        snprintf(buf, len, "false");
     } else {
-        snprintf(buf, len, "true", enableVal);
+        snprintf(buf, len, "true");
     }
 
     return USP_ERR_OK;
