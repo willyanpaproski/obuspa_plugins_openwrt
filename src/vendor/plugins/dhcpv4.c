@@ -396,6 +396,25 @@ int GetPoolEnabled(dm_req_t *req, char *buf, int len)
     return USP_ERR_OK;
 }
 
+int SetPoolEnabled(dm_req_t *req, char *buf) 
+{
+    if (buf == NULL) return USP_ERR_INTERNAL_ERROR;
+
+    char *uciValue;
+
+    if (strcmp(buf, "true") == 0) uciValue = "0";
+
+    else if (strcmp(buf, "false") == 0) uciValue = "1";
+
+    else return USP_ERR_INVALID_VALUE;
+
+    if (SetStringValue("dhcp.lan.ignore", uciValue) != USP_ERR_OK) return USP_ERR_INTERNAL_ERROR;
+
+    system("/etc/init.d/dnsmasq restart");
+
+    return USP_ERR_INTERNAL_ERROR;
+}
+
 int ValidateAddPool(dm_req_t *req)
 {
     return USP_ERR_OBJECT_NOT_CREATABLE;
