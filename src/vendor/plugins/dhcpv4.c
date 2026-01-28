@@ -5,6 +5,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <unistd.h>
 
 int GetLastOctet(char *ip) {
     if (!ip) return -1;
@@ -411,6 +412,29 @@ int SetPoolEnabled(dm_req_t *req, char *buf)
     if (SetStringValue("dhcp.lan.ignore", uciValue) != USP_ERR_OK) return USP_ERR_INTERNAL_ERROR;
 
     system("/etc/init.d/dnsmasq restart");
+
+    return USP_ERR_OK;
+}
+
+int GetDHCPv4Status(dm_req_t *req, char *buf, int len)
+{
+    char ignoreVal[16] = {0};
+
+    if (GetStringValue("dhcp.lan.ignore", ignoreVal, sizeof(ignoreVal)) != USP_ERR_OK) {
+        snprintf(buf, len, "Error");
+        return USP_ERR_OK;
+    }
+
+    if (strcmp(ignoreVal, "1") == 0) {
+        snprintf(buf, len, "Disabled");
+        return USP_ERR_OK;
+    }
+
+    if (access("/var/run/dnsmasq/dnsmasq.pid", F_OK) == 0) {
+        snprintf(buf, len, "Enabled");
+    } else {
+        snprintf(buf, len, "Error");
+    }
 
     return USP_ERR_OK;
 }
