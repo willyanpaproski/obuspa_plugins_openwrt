@@ -412,7 +412,7 @@ int SetPoolEnabled(dm_req_t *req, char *buf)
 
     system("/etc/init.d/dnsmasq restart");
 
-    return USP_ERR_INTERNAL_ERROR;
+    return USP_ERR_OK;
 }
 
 int ValidateAddPool(dm_req_t *req)
