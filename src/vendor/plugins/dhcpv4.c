@@ -6,6 +6,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <dirent.h>
 
 int GetLastOctet(char *ip) {
     if (!ip) return -1;
@@ -416,6 +417,26 @@ int SetPoolEnabled(dm_req_t *req, char *buf)
     return USP_ERR_OK;
 }
 
+bool isDnsMasqRunning() 
+{
+    DIR *dir = opendir("/var/run/dnsmasq");
+    if (dir == NULL) return false;
+
+    struct dirent *entry; 
+    bool running = false;
+
+    while ((entry = readdir(dir)) != NULL)
+    {
+        if (strstr(entry->d_name, ".pid") != NULL) {
+            running = true;
+            break;
+        }
+    }
+
+    closedir(dir);
+    return running;
+}
+
 int GetDHCPv4Status(dm_req_t *req, char *buf, int len)
 {
     char ignoreVal[16] = {0};
@@ -430,7 +451,7 @@ int GetDHCPv4Status(dm_req_t *req, char *buf, int len)
         return USP_ERR_OK;
     }
 
-    if (access("/var/run/dnsmasq/dnsmasq.pid", F_OK) == 0) {
+    if (isDnsMasqRunning()) {
         snprintf(buf, len, "Enabled");
     } else {
         snprintf(buf, len, "Error");
