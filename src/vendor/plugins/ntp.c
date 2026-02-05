@@ -5,6 +5,7 @@
 
 #include <stdio.h>
 #include <time.h>
+#include <sys/timex.h>
 
 static int GetNtpServerByIndex(int index, char *buf, int len)
 {
@@ -105,6 +106,12 @@ int GetTimeParams(int group_id, kv_vector_t *params)
         else if (strcmp(kv->key, "Device.Time.NTPServer2") == 0)
         {
             GetNTPServer2(NULL, buf, sizeof(buf));
+            replaceKVValue(kv, buf);
+        }
+
+        else if (strcmp(kv->key, "Device.Time.Status") == 0)
+        {
+            GetNTPStatus(NULL, buf, sizeof(buf));
             replaceKVValue(kv, buf);
         }
     }
@@ -236,6 +243,29 @@ int GetCurrentLocalTime(dm_req_t *req, char *buf, int len)
     if (strftime(buf, len, "%Y-%m-%dT%H:%M:%S", tm_info) == 0)
     {
         return USP_ERR_INTERNAL_ERROR;
+    }
+
+    return USP_ERR_OK;
+}
+
+int GetNTPStatus(dm_req_t *req, char *buf, int len)
+{
+    struct ntptimeval ntv;
+    int status;
+
+    status = ntp_gettime(ntv);
+
+    if (status == TIME_OK || status == TIME_INS || status == TIME_DEL)
+    {
+        snprintf(buf, len, "Synchronized");
+    }
+    else if (status == TIME_ERROR)
+    {
+        snprintf(buf, len, "Unsynchronized");
+    }
+    else
+    {
+        snprintf(buf, len, "Error");
     }
 
     return USP_ERR_OK;

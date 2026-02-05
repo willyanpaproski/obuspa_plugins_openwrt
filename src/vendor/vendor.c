@@ -90,6 +90,7 @@ int VENDOR_Init(void)
     err |= USP_REGISTER_GroupedVendorParam_ReadWrite(ntp_group_id, "Device.Time.LocalTimeZone", DM_STRING);
     err |= USP_REGISTER_GroupedVendorParam_ReadWrite(ntp_group_id, "Device.Time.NTPServer1", DM_STRING);
     err |= USP_REGISTER_GroupedVendorParam_ReadWrite(ntp_group_id, "Device.Time.NTPServer2", DM_STRING);
+    err |= USP_REGISTER_GroupedVendorParam_ReadOnly(ntp_group_id, "Device.Time.Status", DM_STRING);
 
     //DeviceInfo
     err |= USP_REGISTER_VendorParam_ReadWrite("Device.DeviceInfo.X_IXC_Hostname", GetHostname, SetHostname, NULL, DM_STRING);
