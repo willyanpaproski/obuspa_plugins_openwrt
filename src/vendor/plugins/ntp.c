@@ -139,8 +139,3 @@ int SetNTPEnabled(dm_req_t *req, char *buf)
 
     return USP_ERR_OK;
 }
-
-int SetNTPEnabledValidator(dm_req_t *req, char *buf)
-{
-    return validateUspBoolean(buf);
-}
