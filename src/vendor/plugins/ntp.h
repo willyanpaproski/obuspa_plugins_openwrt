@@ -13,5 +13,6 @@ int GetNTPEnabled(dm_req_t *req, char *buf, int len);
 int SetNTPEnabled(dm_req_t *req, char *buf);
 int GetLocalTimeZone(dm_req_t *req, char *buf, int len);
 int SetLocalTimeZone(dm_req_t *req, char *buf);
+int GetCurrentLocalTime(dm_req_t *req, char *buf, int len);
 
 #endif
