@@ -84,6 +84,7 @@ int VENDOR_Init(void)
     err |= USP_REGISTER_VendorParam_ReadOnly("Device.DHCPv4.Server.Pool.{i}.Status", GetDHCPv4Status, DM_STRING);
 
     //NTP
+    err |= USP_REGISTER_GroupId("Device.Time", ntp_group_id);
     err |= USP_REGISTER_GroupVendorHooks(ntp_group_id, NULL, SetTimeParams, NULL, NULL);
     err |= USP_REGISTER_GroupedVendorParam_ReadWrite(ntp_group_id, "Device.Time.Enable", DM_BOOL);
     err |= USP_REGISTER_GroupedVendorParam_ReadWrite(ntp_group_id, "Device.Time.NTPServer1", DM_STRING);

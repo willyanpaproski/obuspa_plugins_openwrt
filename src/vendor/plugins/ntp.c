@@ -21,7 +21,7 @@ static int GetNtpServerByIndex(int index, char *buf, int len)
     return USP_ERR_OK;
 }
 
-int SetTimeParams(dm_req_t *req, char *path, kv_vector_t *params)
+int SetTimeParams(dm_req_t *req, kv_vector_t *params)
 {
     bool needs_restart = false;
     int err = USP_ERR_OK;
