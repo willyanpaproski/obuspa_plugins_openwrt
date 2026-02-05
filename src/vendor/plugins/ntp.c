@@ -31,19 +31,19 @@ int SetTimeParams(int group_id, kv_vector_t *params, unsigned *types, int *failu
         char *key = params->vector[i].key;
         char *val = params->vector[i].value;
 
-        if (strcmp(key, "NTPServer1") == 0)
+        if (strcmp(key, "Device.Time.Enable") == 0)
+        {
+            err = SetNTPEnabled(NULL, val);
+        }
+
+        else if (strcmp(key, "Device.Time.NTPServer1") == 0)
         {
             err = SetNTPServer1(NULL, val);
         }
 
-        else if (strcmp(key, "NTPServer2") == 0)
+        else if (strcmp(key, "Device.Time.NTPServer2") == 0)
         {
             err = SetNTPServer2(NULL, val);
-        }
-
-        else if (strcmp(key, "Enable") == 0)
-        {
-            err = SetNTPEnabled(NULL, val);
         }
 
         if (err != USP_ERR_OK)
