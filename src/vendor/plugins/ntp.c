@@ -33,8 +33,14 @@ int SetNTPServer1(dm_req_t *req, char *buf)
     GetListValues("system.ntp.server", servers, 16, 64, &count);
 
     strncpy(servers[0], buf, 63);
+
+    if (SetListValues("system.ntp.server", servers, count) != USP_ERR_OK) return USP_ERR_INTERNAL_ERROR;
     
-    return SetListValues("system.ntp.server", servers, count);
+    system("/etc/init.d/ntpd restart");
+    system("/etc/init.d/ntpdate restart");
+    system("/etc/init.d/sysntpd restart");
+
+    return USP_ERR_OK;
 }
 
 int GetNTPServer2(dm_req_t *req, char *buf, int len)
@@ -50,6 +56,50 @@ int SetNTPServer2(dm_req_t *req, char *buf)
     GetListValues("system.ntp.server", servers, 16, 64, &count);
 
     strncpy(servers[1], buf, 63);
+
+    if (SetListValues("system.ntp.server", servers, count) != USP_ERR_OK) return USP_ERR_INTERNAL_ERROR;
+
+    system("/etc/init.d/ntpd restart");
+    system("/etc/init.d/ntpdate restart");
+    system("/etc/init.d/sysntpd restart");
     
-    return SetListValues("system.ntp.server", servers, count);
+    return USP_ERR_OK;
+}
+
+int GetNTPEnabled(dm_req_t *req, char *buf, int len)
+{
+    char enableVal[64];
+
+    if (GetStringValue("system.ntp.enabled", enableVal, sizeof(enableVal)) != USP_ERR_OK) {
+        return USP_ERR_INTERNAL_ERROR;
+    }
+
+    if (strcmp(enableVal, "1") == 0) {
+        snprintf(buf, len, "false");
+    } else {
+        snprintf(buf, len, "true");
+    }
+
+    return USP_ERR_OK;
+}
+
+int SetNTPEnabled(dm_req_t *req, char *buf)
+{
+    if (buf == NULL) return USP_ERR_INTERNAL_ERROR;
+
+    char *uciValue;
+
+    if (strcmp(buf, "true") == 0) uciValue = "0";
+
+    else if (strcmp(buf, "false") == 0) uciValue = "1";
+
+    else return USP_ERR_INTERNAL_ERROR;
+
+    if (SetStringValue("system.ntp.enabled", uciValue) != USP_ERR_OK) return USP_ERR_INTERNAL_ERROR;
+
+    system("/etc/init.d/ntpd restart");
+    system("/etc/init.d/ntpdate restart");
+    system("/etc/init.d/sysntpd restart");
+
+    return USP_ERR_OK;
 }
