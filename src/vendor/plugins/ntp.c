@@ -250,22 +250,20 @@ int GetCurrentLocalTime(dm_req_t *req, char *buf, int len)
 
 int GetNTPStatus(dm_req_t *req, char *buf, int len)
 {
-    struct ntptimeval ntv;
+    struct timex txc;
     int status;
 
-    status = ntp_gettime(ntv);
+    memset(&txc, 0, sizeof(struct timex));
 
-    if (status == TIME_OK || status == TIME_INS || status == TIME_DEL)
+    status = adjtimex(&txc);
+
+    if (status != -1 && !(txc.status & STA_UNSYNC))
     {
         snprintf(buf, len, "Synchronized");
     }
-    else if (status == TIME_ERROR)
-    {
-        snprintf(buf, len, "Unsynchronized");
-    }
     else
     {
-        snprintf(buf, len, "Error");
+        snprintf(buf, len, "Unsynchronized");
     }
 
     return USP_ERR_OK;
