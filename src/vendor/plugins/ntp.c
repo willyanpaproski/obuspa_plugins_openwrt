@@ -36,6 +36,11 @@ int SetTimeParams(int group_id, kv_vector_t *params, unsigned *types, int *failu
             err = SetNTPEnabled(NULL, val);
         }
 
+        else if (strcmp(key, "Device.Time.LocalTimeZone") == 0)
+        {
+            err = SetLocalTimeZone(NULL, val);
+        }
+
         else if (strcmp(key, "Device.Time.NTPServer1") == 0)
         {
             err = SetNTPServer1(NULL, val);
@@ -75,6 +80,12 @@ int GetTimeParams(int group_id, kv_vector_t *params)
         if (strcmp(kv->key, "Device.Time.Enable") == 0)
         {
             GetNTPEnabled(NULL, buf, sizeof(buf));
+            replaceKVValue(kv, buf);
+        }
+
+        else if (strcmp(kv->key, "Device.Time.LocalTimeZone") == 0)
+        {
+            GetLocalTimeZone(NULL, buf, sizeof(buf));
             replaceKVValue(kv, buf);
         }
 
@@ -166,6 +177,42 @@ int SetNTPEnabled(dm_req_t *req, char *buf)
     else return USP_ERR_INTERNAL_ERROR;
 
     if (SetStringValue("system.ntp.enabled", uciValue) != USP_ERR_OK) return USP_ERR_INTERNAL_ERROR;
+
+    return USP_ERR_OK;
+}
+
+int GetLocalTimeZone(dm_req_t *req, char *buf, int len)
+{
+    char timeZoneVal[64];
+    char finalTimeZoneVal[64];
+
+    if (GetStringValue("system.@system[0].timezone", timeZoneVal, sizeof(timeZoneVal)) != USP_ERR_OK)
+    {
+        return USP_ERR_INTERNAL_ERROR;
+    }
+
+    if (strReplace(finalTimeZoneVal, sizeof(finalTimeZoneVal), timeZoneVal, "GMT", "") != 0)
+    {
+        return USP_ERR_INTERNAL_ERROR;
+    }
+
+    snprintf(buf, len, "%s", finalTimeZoneVal);
+
+    return USP_ERR_OK;
+}
+
+int SetLocalTimeZone(dm_req_t *req, char *buf)
+{
+    if (buf == NULL) return USP_ERR_INTERNAL_ERROR;
+
+    char timeZoneToSet[64];
+
+    snprintf(timeZoneToSet, sizeof(timeZoneToSet), "GMT%s", buf);
+
+    if (SetStringValue("system.@system[0].timezone", timeZoneToSet) != USP_ERR_OK)
+    {
+        return USP_ERR_INTERNAL_ERROR;
+    }
 
     return USP_ERR_OK;
 }

@@ -86,6 +86,7 @@ int VENDOR_Init(void)
     //NTP
     err |= USP_REGISTER_GroupVendorHooks(ntp_group_id, GetTimeParams, SetTimeParams, NULL, NULL);
     err |= USP_REGISTER_GroupedVendorParam_ReadWrite(ntp_group_id, "Device.Time.Enable", DM_BOOL);
+    err |= USP_REGISTER_GroupedVendorParam_ReadWrite(ntp_group_id, "Device.Time.LocalTimeZone", DM_STRING);
     err |= USP_REGISTER_GroupedVendorParam_ReadWrite(ntp_group_id, "Device.Time.NTPServer1", DM_STRING);
     err |= USP_REGISTER_GroupedVendorParam_ReadWrite(ntp_group_id, "Device.Time.NTPServer2", DM_STRING);
 
