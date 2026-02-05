@@ -159,9 +159,9 @@ int SetNTPEnabled(dm_req_t *req, char *buf)
 
     char *uciValue;
 
-    if (strcmp(buf, "true") == 0) uciValue = "0";
+    if (strcmp(buf, "true") == 0) uciValue = "1";
 
-    else if (strcmp(buf, "false") == 0) uciValue = "1";
+    else if (strcmp(buf, "false") == 0) uciValue = "0";
 
     else return USP_ERR_INTERNAL_ERROR;
 
