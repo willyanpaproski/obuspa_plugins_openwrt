@@ -72,19 +72,19 @@ int GetTimeParams(int group_id, kv_vector_t *params)
     {
         kv_pair_t *kv = &params->vector[i];
 
-        if (strcmp(kv->key, "Enable") == 0)
+        if (strcmp(kv->key, "Device.Time.Enable") == 0)
         {
             GetNTPEnabled(NULL, buf, sizeof(buf));
             replaceKVValue(kv, buf);
         }
 
-        else if (strcmp(kv->key, "NTPServer1") == 0)
+        else if (strcmp(kv->key, "Device.Time.NTPServer1") == 0)
         {
             GetNTPServer1(NULL, buf, sizeof(buf));
             replaceKVValue(kv, buf);
         }
 
-        else if (strcmp(kv->key, "NTPServer2") == 0)
+        else if (strcmp(kv->key, "Device.Time.NTPServer2") == 0)
         {
             GetNTPServer2(NULL, buf, sizeof(buf));
             replaceKVValue(kv, buf);
