@@ -70,7 +70,6 @@ int VENDOR_Init(void)
     //DHCPv4
     err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Enable", GetPoolEnabled, SetPoolEnabled, NULL, DM_BOOL);
     err |= USP_REGISTER_Param_Constant("Device.DHCPv4.Server.PoolNumberOfEntries", "1", DM_STRING);
-
     err |= USP_REGISTER_Object("Device.DHCPv4.Server.Pool.{i}.", ValidateAddPool, NULL, NULL, ValidateRemovePool, NULL, NULL);
     err |= USP_REGISTER_Param_Constant("Device.DHCPv4.Server.Pool.{i}.Alias", "cpe-dhcpv4pool", DM_STRING);
     err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Pool.{i}.DNSServers", GetDnsServers, SetDnsServers, NULL, DM_STRING);
@@ -84,7 +83,7 @@ int VENDOR_Init(void)
     err |= USP_REGISTER_VendorParam_ReadOnly("Device.DHCPv4.Server.Pool.{i}.Status", GetDHCPv4Status, DM_STRING);
 
     //NTP
-    err |= USP_REGISTER_GroupedVendorParam_ReadWrite("Device.Time.", NULL, SetTimeParams);
+    err |= USP_REGISTER_GroupVendorHooks("Device.Time.", NULL, SetTimeParams, NULL, NULL);
     err |= USP_REGISTER_VendorParam_ReadWrite("Device.Time.NTPServer1", GetNTPServer1, SetNTPServer1, NULL, DM_STRING);
     err |= USP_REGISTER_VendorParam_ReadWrite("Device.Time.NTPServer2", GetNTPServer2, SetNTPServer2, NULL, DM_STRING);
     err |= USP_REGISTER_VendorParam_ReadWrite("Device.Time.Enable", GetNTPEnabled, SetNTPEnabled, SetNTPEnabledValidator, DM_BOOL);
