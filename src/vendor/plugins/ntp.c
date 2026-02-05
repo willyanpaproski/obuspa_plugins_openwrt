@@ -145,9 +145,9 @@ int GetNTPEnabled(dm_req_t *req, char *buf, int len)
     }
 
     if (strcmp(enableVal, "1") == 0) {
-        snprintf(buf, len, "false");
-    } else {
         snprintf(buf, len, "true");
+    } else {
+        snprintf(buf, len, "false");
     }
 
     return USP_ERR_OK;
