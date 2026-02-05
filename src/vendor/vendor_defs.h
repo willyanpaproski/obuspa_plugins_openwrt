@@ -132,7 +132,7 @@
 //-----------------------------------------------------------------------------------------
 // Uncomment the following to remove code and features from the standard build
 //#define REMOVE_DEVICE_INFO               // Removes DeviceInfo from the core data model. It must instead be provided by the vendor.
-//#define REMOVE_DEVICE_TIME               // Removes Device.Time from the core data model. It must instead be provided by the vendor.
+#define REMOVE_DEVICE_TIME               // Removes Device.Time from the core data model. It must instead be provided by the vendor.
 //#define REMOVE_USP_BROKER                // Removes all USP Broker functionality, including Device.USPServices
 //#define REMOVE_USP_SERVICE               // Removes all USP Service functionality
 //#define REMOVE_DEVICE_REBOOT             // Removes Device.Reboot() from the core data model
