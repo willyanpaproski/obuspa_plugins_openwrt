@@ -21,7 +21,7 @@ static int GetNtpServerByIndex(int index, char *buf, int len)
     return USP_ERR_OK;
 }
 
-int SetTimeParams(dm_req_t *req, kv_vector_t *params)
+int SetTimeParams(int group_id, kv_vector_t *params, unsigned *types, int *failure_index)
 {
     bool needs_restart = false;
     int err = USP_ERR_OK;
@@ -33,17 +33,17 @@ int SetTimeParams(dm_req_t *req, kv_vector_t *params)
 
         if (strcmp(key, "NTPServer1") == 0)
         {
-            err = SetNTPServer1(req, val);
+            err = SetNTPServer1(NULL, val);
         }
 
         else if (strcmp(key, "NTPServer2") == 0)
         {
-            err = SetNTPServer2(req, val);
+            err = SetNTPServer2(NULL, val);
         }
 
         else if (strcmp(key, "Enable") == 0)
         {
-            err = SetNTPEnabled(req, val);
+            err = SetNTPEnabled(NULL, val);
         }
 
         if (err != USP_ERR_OK)
