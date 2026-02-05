@@ -4,6 +4,7 @@
 #include "utils.h"
 
 #include <stdio.h>
+#include <time.h>
 
 static int GetNtpServerByIndex(int index, char *buf, int len)
 {
@@ -77,7 +78,13 @@ int GetTimeParams(int group_id, kv_vector_t *params)
     {
         kv_pair_t *kv = &params->vector[i];
 
-        if (strcmp(kv->key, "Device.Time.Enable") == 0)
+        if (strcmp(kv->key, "Device.Time.CurrentLocalTime") == 0) 
+        {
+            GetCurrentLocalTime(NULL, buf, sizeof(buf));
+            replaceKVValue(kv, buf);
+        }
+
+        else if (strcmp(kv->key, "Device.Time.Enable") == 0)
         {
             GetNTPEnabled(NULL, buf, sizeof(buf));
             replaceKVValue(kv, buf);
@@ -210,6 +217,23 @@ int SetLocalTimeZone(dm_req_t *req, char *buf)
     snprintf(timeZoneToSet, sizeof(timeZoneToSet), "GMT%s", buf);
 
     if (SetStringValue("system.@system[0].timezone", timeZoneToSet) != USP_ERR_OK)
+    {
+        return USP_ERR_INTERNAL_ERROR;
+    }
+
+    return USP_ERR_OK;
+}
+
+int GetCurrentLocalTime(dm_req_t *req, char *buf, int len)
+{
+    time_t now;
+    struct tm *tm_info;
+
+    time(&now);
+
+    tm_info = localtime(&now);
+
+    if (strftime(buf, len, "%Y-%m-%dT%H:%M:%S", tm_info) == 0)
     {
         return USP_ERR_INTERNAL_ERROR;
     }
