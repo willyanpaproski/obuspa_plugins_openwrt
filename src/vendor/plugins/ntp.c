@@ -64,6 +64,36 @@ int SetTimeParams(int group_id, kv_vector_t *params, unsigned *types, int *failu
     return USP_ERR_OK;
 }
 
+int GetTimeParams(int group_id, kv_vector_t *params)
+{
+    char buf[256];
+
+    for (int i = 0; i < params->num_entries; i++)
+    {
+        kv_pair_t *kv = &params->vector[i];
+
+        if (strcmp(kv->key, "Enable") == 0)
+        {
+            GetNTPEnabled(NULL, buf, sizeof(buf));
+            replaceKVValue(kv, buf);
+        }
+
+        else if (strcmp(kv->key, "NTPServer1") == 0)
+        {
+            GetNTPServer1(NULL, buf, sizeof(buf));
+            replaceKVValue(kv, buf);
+        }
+
+        else if (strcmp(kv->key, "NTPServer2") == 0)
+        {
+            GetNTPServer2(NULL, buf, sizeof(buf));
+            replaceKVValue(kv, buf);
+        }
+    }
+
+    return USP_ERR_OK;
+}
+
 int GetNTPServer1(dm_req_t *req, char *buf, int len)
 {
     return GetNtpServerByIndex(0, buf, len);

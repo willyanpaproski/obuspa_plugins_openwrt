@@ -1,6 +1,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include "usp_err_codes.h"
+#include "usp_api.h"
+#include "usp_mem.h"
 
 bool endsWith(char *str, char *suffix)
 {
@@ -54,4 +56,14 @@ int validateUspBoolean(char *value)
     }
 
     return USP_ERR_INVALID_VALUE;
+}
+
+void replaceKVValue(kv_pair_t *kv, char *newValue)
+{
+    if (kv->value != NULL)
+    {
+        USP_SAFE_FREE(kv->value);
+    }
+
+    kv->value = USP_STRDUP(newValue);
 }
