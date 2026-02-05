@@ -84,9 +84,10 @@ int VENDOR_Init(void)
     err |= USP_REGISTER_VendorParam_ReadOnly("Device.DHCPv4.Server.Pool.{i}.Status", GetDHCPv4Status, DM_STRING);
 
     //NTP
+    err |= USP_REGISTER_GroupedVendorParam_ReadWrite("Device.Time.", NULL, SetTimeParams);
     err |= USP_REGISTER_VendorParam_ReadWrite("Device.Time.NTPServer1", GetNTPServer1, SetNTPServer1, NULL, DM_STRING);
     err |= USP_REGISTER_VendorParam_ReadWrite("Device.Time.NTPServer2", GetNTPServer2, SetNTPServer2, NULL, DM_STRING);
-    err |= USP_REGISTER_VendorParam_ReadWrite("Device.Time.Enable", GetNTPEnabled, SetNTPEnabled, NULL, DM_BOOL);
+    err |= USP_REGISTER_VendorParam_ReadWrite("Device.Time.Enable", GetNTPEnabled, SetNTPEnabled, SetNTPEnabledValidator, DM_BOOL);
 
     //DeviceInfo
     err |= USP_REGISTER_VendorParam_ReadWrite("Device.DeviceInfo.X_IXC_Hostname", GetHostname, SetHostname, NULL, DM_STRING);

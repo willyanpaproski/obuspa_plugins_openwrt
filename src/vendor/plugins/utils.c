@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdbool.h>
+#include "usp_err_codes.h"
 
 bool endsWith(char *str, char *suffix)
 {
@@ -41,4 +42,16 @@ int strReplace(
 
     dest[dest_len] = '\0';
     return 0;
+}
+
+int validateUspBoolean(char *value)
+{
+    if (value == NULL) return USP_ERR_INVALID_VALUE;
+
+    if (strcmp(value, "true") == 0 || strcmp(value, "false") == 0)
+    {
+        return USP_ERR_OK;
+    }
+
+    return USP_ERR_INVALID_VALUE;
 }
