@@ -3,7 +3,10 @@
 
 #include "usp_api.h"
 
+int GetDeviceInfoParams(int group_id, kv_vector_t *params);
+int SetDeviceInfoParams(int group_id, kv_vector_t *params, unsigned *types, int *failure_index);
 int GetHostname(dm_req_t *req, char *buf, int len);
 int SetHostname(dm_req_t *req, char *buf);
+int GetTotalMemory(dm_req_t *req, char *buf, int len);
 
 #endif

@@ -67,6 +67,7 @@ int VENDOR_Init(void)
 {
     int ntp_group_id = 1;
     int dhcpv4_group_id = 2;
+    int deviceInfo_group_id = 3;
     int err = USP_ERR_OK;
 
     //DHCPv4
@@ -95,7 +96,10 @@ int VENDOR_Init(void)
     err |= USP_REGISTER_GroupedVendorParam_ReadOnly(ntp_group_id, "Device.Time.Status", DM_STRING);
 
     //DeviceInfo
-    err |= USP_REGISTER_VendorParam_ReadWrite("Device.DeviceInfo.X_IXC_Hostname", GetHostname, SetHostname, NULL, DM_STRING);
+    err |= USP_REGISTER_GroupVendorHooks(deviceInfo_group_id, GetDeviceInfoParams, SetDeviceInfoParams, NULL, NULL);
+    err |= USP_REGISTER_GroupedVendorParam_ReadWrite(deviceInfo_group_id, "Device.DeviceInfo.X_IXC_Hostname", DM_STRING);
+    err |= USP_REGISTER_GroupedVendorParam_ReadOnly(deviceInfo_group_id, "Device.DeviceInfo.MemoryStatus.Free", DM_ULONG);
+    err |= USP_REGISTER_GroupedVendorParam_ReadOnly(deviceInfo_group_id, "Device.DeviceInfo.MemoryStatus.Total", DM_ULONG);
 
     return err;
 }

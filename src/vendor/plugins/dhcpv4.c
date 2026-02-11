@@ -204,7 +204,6 @@ int SetLeaseTime(dm_req_t *req, char *buf)
 
     if (ret != USP_ERR_OK) return USP_ERR_INTERNAL_ERROR;
 
-    system("/etc/init.d/dnsmasq restart");
     return ret;
 }
 
@@ -258,8 +257,6 @@ int SetGateway(dm_req_t *req, char *buf)
     int ret = SetListValues("dhcp.lan.dhcp_option", dhcpOptions, count);
 
     if (ret != USP_ERR_OK) return USP_ERR_INTERNAL_ERROR;
-
-    system("/etc/init.d/dnsmasq restart");
 
     return ret;
 }
@@ -315,8 +312,6 @@ int SetSubnetMask(dm_req_t *req, char *buf)
     int ret = SetListValues("dhcp.lan.dhcp_option", dhcpOptions, count);
 
     if (ret != USP_ERR_OK) return USP_ERR_INTERNAL_ERROR;
-
-    system("/etc/init.d/dnsmasq restart");
 
     return ret;
 }
@@ -374,8 +369,6 @@ int SetMinAddress(dm_req_t *req, char *buf)
     if (SetStringValue("dhcp.lan.start", value) != USP_ERR_OK) {
         return USP_ERR_INTERNAL_ERROR;
     }
-
-    system("/etc/init.d/dnsmasq restart");
     
     return USP_ERR_OK;
 }
@@ -433,8 +426,6 @@ int SetMaxAddress(dm_req_t *req, char *buf)
     if (SetStringValue("dhcp.lan.limit", value) != USP_ERR_OK) {
         return USP_ERR_INTERNAL_ERROR;
     }
-
-    system("/etc/init.d/dnsmasq restart");
     
     return USP_ERR_OK;
 }
@@ -485,8 +476,6 @@ int SetDnsServers(dm_req_t *req, char *buf)
     int ret = SetListValues("dhcp.lan.dhcp_option", dhcpOptions, count);
 
     if (ret != USP_ERR_OK) return USP_ERR_INTERNAL_ERROR;
-
-    system("/etc/init.d/dnsmasq restart");
 
     return ret;
 }
@@ -545,7 +534,6 @@ int SetDomainName(dm_req_t *req, char *buf)
         return USP_ERR_INTERNAL_ERROR;
     }
 
-    system("/etc/init.d/dnsmasq restart");
     return USP_ERR_OK;
 }
 
@@ -579,8 +567,6 @@ int SetPoolEnabled(dm_req_t *req, char *buf)
     else return USP_ERR_INVALID_VALUE;
 
     if (SetStringValue("dhcp.lan.ignore", uciValue) != USP_ERR_OK) return USP_ERR_INTERNAL_ERROR;
-
-    system("/etc/init.d/dnsmasq restart");
 
     return USP_ERR_OK;
 }
