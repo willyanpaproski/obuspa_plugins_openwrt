@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdbool.h>
+#include <arpa/inet.h>
 #include "usp_err_codes.h"
 #include "usp_api.h"
 #include "usp_mem.h"
@@ -66,4 +67,26 @@ void replaceKVValue(kv_pair_t *kv, char *newValue)
     }
 
     kv->value = USP_STRDUP(newValue);
+}
+
+bool isValidIPv4Address(const char *ip)
+{
+    struct sockaddr_in sa;
+
+    if (ip == NULL || *ip == '\0') return false;
+
+    if (inet_pton(AF_INET, ip, &(sa.sin_addr)) == 1) return true;
+
+    return false;
+}
+
+bool isValidIPv6Address(const char *ip)
+{
+    struct sockaddr_in6 sa6;
+
+    if (ip == NULL || *ip == '\0') return false;
+
+    if (inet_pton(AF_INET6, ip, &(sa6.sin6_addr)) == 0) return true;
+
+    return false;
 }

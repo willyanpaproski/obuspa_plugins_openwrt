@@ -237,6 +237,10 @@ int SetGateway(dm_req_t *req, char *buf)
     int count = 0;
     bool found = false;
 
+    if (buf == NULL || buf[0] == '\0') return USP_ERR_INTERNAL_ERROR;
+
+    if (!isValidIPv4Address(buf)) return USP_ERR_INVALID_VALUE;
+
     if (GetListValues("dhcp.lan.dhcp_option", dhcpOptions, 16, 64, &count) != USP_ERR_OK) {
         return USP_ERR_INTERNAL_ERROR;
     }
@@ -289,9 +293,14 @@ int SetSubnetMask(dm_req_t *req, char *buf)
     int count = 0;
     bool found = false;
 
+    if (buf == NULL || buf[0] == '\0') return USP_ERR_INTERNAL_ERROR;
+
+    if (!isValidIPv4Address(buf)) return USP_ERR_INVALID_VALUE;
+
     if (GetListValues("dhcp.lan.dhcp_option", dhcpOptions, 16, 64, &count) != USP_ERR_OK) {
         return USP_ERR_INTERNAL_ERROR;
     }
+
 
     for (int i = 0; i < count; i++) {
         if (strncmp(dhcpOptions[i], "1,", 2) == 0) {
@@ -354,6 +363,8 @@ int SetMinAddress(dm_req_t *req, char *buf)
 {
     if (buf == NULL || buf[0] == '\0') return USP_ERR_INTERNAL_ERROR;
 
+    if (!isValidIPv4Address(buf)) return USP_ERR_INVALID_VALUE;
+
     int octet = GetLastOctet(buf);
     if (octet < 0 || octet > 255) return USP_ERR_INVALID_VALUE;
 
@@ -410,6 +421,8 @@ int GetMaxAddress(dm_req_t *req, char *buf, int len)
 int SetMaxAddress(dm_req_t *req, char *buf)
 {
     if (buf == NULL || buf[0] == '\0') return USP_ERR_INTERNAL_ERROR;
+
+    if (!isValidIPv4Address(buf)) return USP_ERR_INVALID_VALUE;
 
     int octet = GetLastOctet(buf);
     if (octet < 0 || octet > 255) return USP_ERR_INVALID_VALUE;
