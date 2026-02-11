@@ -66,22 +66,38 @@
 int VENDOR_Init(void)
 {
     int ntp_group_id = 1;
+    int dhcpv4_group_id = 2;
     int err = USP_ERR_OK;
 
     //DHCPv4
-    err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Enable", GetPoolEnabled, SetPoolEnabled, NULL, DM_BOOL);
-    err |= USP_REGISTER_Param_Constant("Device.DHCPv4.Server.PoolNumberOfEntries", "1", DM_STRING);
+    //err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Enable", GetPoolEnabled, SetPoolEnabled, NULL, DM_BOOL);
+    //err |= USP_REGISTER_Param_Constant("Device.DHCPv4.Server.PoolNumberOfEntries", "1", DM_STRING);
+    //err |= USP_REGISTER_Param_Constant("Device.DHCPv4.Server.Pool.{i}.Alias", "cpe-dhcpv4pool", DM_STRING);
+    //err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Pool.{i}.DNSServers", GetDnsServers, SetDnsServers, NULL, DM_STRING);
+    //err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Pool.{i}.DomainName", GetDomainName, SetDomainName, NULL, DM_STRING);
+    //err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Pool.{i}.Enable", GetPoolEnabled, SetPoolEnabled, NULL, DM_BOOL);
+    //err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Pool.{i}.IPRouters", GetGateway, SetGateway, NULL, DM_STRING);
+    //err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Pool.{i}.LeaseTime", GetLeaseTime, SetLeaseTime, NULL, DM_STRING);
+    //err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Pool.{i}.SubnetMask", GetSubnetMask, SetSubnetMask, NULL, DM_STRING);
+    //err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Pool.{i}.MaxAddress", GetMaxAddress, SetMaxAddress, NULL, DM_STRING);
+    //err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Pool.{i}.MinAddress", GetMinAddress, SetMinAddress, NULL, DM_STRING);
+    //err |= USP_REGISTER_VendorParam_ReadOnly("Device.DHCPv4.Server.Pool.{i}.Status", GetDHCPv4Status, DM_STRING);
+    
+    err |= USP_REGISTER_GroupVendorHooks(dhcpv4_group_id, GetDHCPv4Params, SetDHCPv4Params, NULL, NULL);
+    err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Enable", DM_BOOL);
+    err |= USP_REGISTER_GroupedVendorParam_ReadOnly(dhcpv4_group_id, "Device.DHCPv4.Server.PoolNumberOfEntries", DM_STRING);
+
     err |= USP_REGISTER_Object("Device.DHCPv4.Server.Pool.{i}.", ValidateAddPool, NULL, NULL, ValidateRemovePool, NULL, NULL);
-    err |= USP_REGISTER_Param_Constant("Device.DHCPv4.Server.Pool.{i}.Alias", "cpe-dhcpv4pool", DM_STRING);
-    err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Pool.{i}.DNSServers", GetDnsServers, SetDnsServers, NULL, DM_STRING);
-    err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Pool.{i}.DomainName", GetDomainName, SetDomainName, NULL, DM_STRING);
-    err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Pool.{i}.Enable", GetPoolEnabled, SetPoolEnabled, NULL, DM_BOOL);
-    err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Pool.{i}.IPRouters", GetGateway, SetGateway, NULL, DM_STRING);
-    err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Pool.{i}.LeaseTime", GetLeaseTime, SetLeaseTime, NULL, DM_STRING);
-    err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Pool.{i}.SubnetMask", GetSubnetMask, SetSubnetMask, NULL, DM_STRING);
-    err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Pool.{i}.MaxAddress", GetMaxAddress, SetMaxAddress, NULL, DM_STRING);
-    err |= USP_REGISTER_VendorParam_ReadWrite("Device.DHCPv4.Server.Pool.{i}.MinAddress", GetMinAddress, SetMinAddress, NULL, DM_STRING);
-    err |= USP_REGISTER_VendorParam_ReadOnly("Device.DHCPv4.Server.Pool.{i}.Status", GetDHCPv4Status, DM_STRING);
+    err |= USP_REGISTER_GroupedVendorParam_ReadOnly(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.{i}.Alias", DM_STRING);
+    err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.{i}.DNSServers", DM_STRING);
+    err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.{i}.DomainName", DM_STRING);
+    err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.{i}.Enable", DM_BOOL);
+    err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.{i}.IPRouters", DM_STRING);
+    err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.{i}.LeaseTime", DM_STRING);
+    err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.{i}.SubnetMask", DM_STRING);
+    err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.{i}.MaxAddress", DM_STRING);
+    err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.{i}.MinAddress", DM_STRING);
+    err |= USP_REGISTER_GroupedVendorParam_ReadOnly(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.{i}.Status", DM_STRING);
 
     //NTP
     err |= USP_REGISTER_GroupVendorHooks(ntp_group_id, GetTimeParams, SetTimeParams, NULL, NULL);

@@ -3,6 +3,8 @@
 
 #include "usp_api.h"
 
+int GetDHCPv4Params(int group_id, kv_vector_t *params);
+int SetDHCPv4Params(int group_id, kv_vector_t *params, unsigned *types, int *failure_index);
 int GetLeaseTime(dm_req_t *req, char *buf, int len);
 int SetLeaseTime(dm_req_t *req, char *buf);
 int GetGateway(dm_req_t *req, char *buf, int len);

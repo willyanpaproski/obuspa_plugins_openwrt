@@ -15,6 +15,161 @@ int GetLastOctet(char *ip) {
     return atoi(lastDot + 1);
 }
 
+int GetDHCPv4Params(int group_id, kv_vector_t *params)
+{
+    char buf[256];
+
+    for (int i = 0; i <params->num_entries; i++)
+    {
+        kv_pair_t *kv = &params->vector[i];
+
+        if (strcmp(kv->key, "Device.DHCPv4.Server.Enable") == 0)
+        {
+            GetPoolEnabled(NULL, buf, sizeof(buf));
+            replaceKVValue(kv, buf);
+        }
+
+        if (strcmp(kv->key, "Device.DHCPv4.Server.PoolNumberOfEntries") == 0)
+        {
+            snprintf(buf, sizeof(buf), "1");
+            replaceKVValue(kv, buf);
+        }
+
+        if (strcmp(kv->key, "Device.DHCPv4.Server.Pool.1.Alias") == 0)
+        {
+            snprintf(buf, sizeof(buf), "cpe-dhcpv4pool");
+            replaceKVValue(kv, buf);
+        }
+
+        if (strcmp(kv->key, "Device.DHCPv4.Server.Pool.1.DNSServers") == 0)
+        {
+            GetDnsServers(NULL, buf, sizeof(buf));
+            replaceKVValue(kv, buf);
+        }
+
+        if (strcmp(kv->key, "Device.DHCPv4.Server.Pool.1.DomainName") == 0)
+        {
+            GetDomainName(NULL, buf, sizeof(buf));
+            replaceKVValue(kv, buf);
+        }
+
+        if (strcmp(kv->key, "Device.DHCPv4.Server.Pool.1.Enable") == 0)
+        {
+            GetPoolEnabled(NULL, buf, sizeof(buf));
+            replaceKVValue(kv, buf);
+        }
+
+        if (strcmp(kv->key, "Device.DHCPv4.Server.Pool.1.IPRouters") == 0)
+        {
+            GetGateway(NULL, buf, sizeof(buf));
+            replaceKVValue(kv, buf);
+        }
+
+        if (strcmp(kv->key, "Device.DHCPv4.Server.Pool.1.LeaseTime") == 0)
+        {
+            GetLeaseTime(NULL, buf, sizeof(buf));
+            replaceKVValue(kv, buf);
+        }
+
+        if (strcmp(kv->key, "Device.DHCPv4.Server.Pool.1.SubnetMask") == 0)
+        {
+            GetSubnetMask(NULL, buf, sizeof(buf));
+            replaceKVValue(kv, buf);
+        }
+
+        if (strcmp(kv->key, "Device.DHCPv4.Server.Pool.1.MaxAddress") == 0)
+        {
+            GetMaxAddress(NULL, buf, sizeof(buf));
+            replaceKVValue(kv, buf);
+        }
+
+        if (strcmp(kv->key, "Device.DHCPv4.Server.Pool.1.MinAddress") == 0)
+        {
+            GetMinAddress(NULL, buf, sizeof(buf));
+            replaceKVValue(kv, buf);
+        }
+
+        if (strcmp(kv->key, "Device.DHCPv4.Server.Pool.1.Status") == 0)
+        {
+            GetDHCPv4Status(NULL, buf, sizeof(buf));
+            replaceKVValue(kv, buf);
+        }
+    }
+
+    return USP_ERR_OK;
+}
+
+int SetDHCPv4Params(int group_id, kv_vector_t *params, unsigned *types, int *failure_index)
+{
+    bool needs_restart = false;
+    int err = USP_ERR_OK;
+
+    for (int i = 0; i < params->num_entries; i++)
+    {
+        char *key = params->vector[i].key;
+        char *val = params->vector[i].value;
+
+        if (strcmp(key, "Device.DHCPv4.Server.Enable") == 0)
+        {
+            err = SetPoolEnabled(NULL, val);
+        }
+
+        if (strcmp(key, "Device.DHCPv4.Server.Pool.1.DNSServers") == 0)
+        {
+            err = SetDnsServers(NULL, val);
+        }
+
+        if (strcmp(key, "Device.DHCPv4.Server.Pool.1.DomainName") == 0)
+        {
+            err = SetDomainName(NULL, val);
+        }
+
+        if (strcmp(key, "Device.DHCPv4.Server.Pool.1.Enable") == 0)
+        {
+            err = SetPoolEnabled(NULL, val);
+        }
+
+        if (strcmp(key, "Device.DHCPv4.Server.Pool.1.IPRouters") == 0)
+        {
+            err = SetGateway(NULL, val);
+        }
+
+        if (strcmp(key, "Device.DHCPv4.Server.Pool.1.LeaseTime") == 0)
+        {
+            err = SetLeaseTime(NULL, val);
+        }
+
+        if (strcmp(key, "Device.DHCPv4.Server.Pool.1.SubnetMask") == 0)
+        {
+            err = SetSubnetMask(NULL, val);
+        }
+
+        if (strcmp(key, "Device.DHCPv4.Server.Pool.1.MaxAddress") == 0)
+        {
+            err = SetMaxAddress(NULL, val);
+        }
+
+        if (strcmp(key, "Device.DHCPv4.Server.Pool.1.MinAddress") == 0)
+        {
+            err = SetMinAddress(NULL, val);
+        }
+
+        if (err != USP_ERR_OK)
+        {
+            return err;
+        }
+
+        needs_restart = true;
+    }
+
+    if (needs_restart)
+    {
+        system("/etc/init.d/dnsmasq restart");
+    }
+
+    return USP_ERR_OK;
+}
+
 int GetLeaseTime(dm_req_t *req, char *buf, int len)
 {
     char uciVal[64];
