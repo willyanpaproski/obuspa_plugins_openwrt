@@ -97,6 +97,7 @@ int VENDOR_Init(void)
 
     //DeviceInfo
     err |= USP_REGISTER_GroupVendorHooks(deviceInfo_group_id, GetDeviceInfoParams, SetDeviceInfoParams, NULL, NULL);
+    err |= USP_REGISTER_Object("Device.DeviceInfo.MemoryStatus.", NULL, NULL, NULL, NULL, NULL, NULL);
     err |= USP_REGISTER_GroupedVendorParam_ReadWrite(deviceInfo_group_id, "Device.DeviceInfo.X_IXC_Hostname", DM_STRING);
     err |= USP_REGISTER_GroupedVendorParam_ReadOnly(deviceInfo_group_id, "Device.DeviceInfo.MemoryStatus.Free", DM_ULONG);
     err |= USP_REGISTER_GroupedVendorParam_ReadOnly(deviceInfo_group_id, "Device.DeviceInfo.MemoryStatus.Total", DM_ULONG);
