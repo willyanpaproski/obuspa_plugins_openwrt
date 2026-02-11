@@ -59,6 +59,8 @@ int SetDeviceInfoParams(int group_id, kv_vector_t *params, unsigned *types, int 
     {
         system("/etc/init.d/system restart");
     }
+
+    return err;
 }
 
 int GetHostname(dm_req_t *req, char *buf, int len)
