@@ -132,7 +132,7 @@ int VENDOR_Start(void)
 
     USP_DM_InformInstance("Device.DHCPv4.Server.Pool.1.");
 
-    FILE *fp = popen("uci show dhcp | grep -c \"=host\"", "r");
+    FILE *fp = popen("uci show dhcp | grep \"=host\" | wc -l", "r");
     if (fp)
     {
         int count = 0;
