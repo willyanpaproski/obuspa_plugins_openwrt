@@ -90,3 +90,26 @@ bool isValidIPv6Address(const char *ip)
 
     return false;
 }
+
+int GetInstanceIndex(const char *path, const char *obj_name)
+{
+    if (path == NULL || obj_name == NULL) return -1;
+    
+    char *ocurrence;
+    char pattern[128];
+    int index = -1;
+
+    ocurrence = strstr(path, obj_name);
+
+    if (ocurrence)
+    {
+        snprintf(pattern, sizeof(pattern), "%s.%%d", obj_name);
+
+        if (sscanf(ocurrence, pattern, &index) == 1)
+        {
+            return index;
+        }
+    }
+
+    return -1;
+}

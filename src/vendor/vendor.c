@@ -86,6 +86,13 @@ int VENDOR_Init(void)
     err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.{i}.MinAddress", DM_STRING);
     err |= USP_REGISTER_GroupedVendorParam_ReadOnly(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.{i}.Status", DM_STRING);
 
+    err |= USP_REGISTER_Object("Device.DHCPv4.Server.Pool.1.StaticAddress.{i}.", 
+                            ValidateAddStaticAddress, AddStaticAddress, NULL, 
+                            ValidateRemoveStaticAddress, DeleteStaticAddress, NULL);
+    err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.1.StaticAddress.{i}.Enable", DM_BOOL);
+    err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.1.StaticAddress.{i}.Chaddr", DM_STRING); // MAC
+    err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.1.StaticAddress.{i}.Yiaddr", DM_STRING);
+
     //NTP
     err |= USP_REGISTER_GroupVendorHooks(ntp_group_id, GetTimeParams, SetTimeParams, NULL, NULL);
     err |= USP_REGISTER_GroupedVendorParam_ReadOnly(ntp_group_id, "Device.Time.CurrentLocalTime", DM_STRING);
@@ -102,7 +109,7 @@ int VENDOR_Init(void)
     err |= USP_REGISTER_GroupedVendorParam_ReadOnly(deviceInfo_group_id, "Device.DeviceInfo.MemoryStatus.Total", DM_ULONG);
     err |= USP_REGISTER_GroupedVendorParam_ReadOnly(deviceInfo_group_id, "Device.DeviceInfo.ProcessStatus.CPUUsage", DM_STRING);
     err |= USP_REGISTER_GroupedVendorParam_ReadOnly(deviceInfo_group_id, "Device.DeviceInfo.ProcessStatus.ProcessNumberOfEntries", DM_ULONG);
-    
+
     return err;
 }
 
@@ -124,6 +131,22 @@ int VENDOR_Start(void)
 {
 
     USP_DM_InformInstance("Device.DHCPv4.Server.Pool.1.");
+
+    FILE *fp = popen("uci show dhcp | grep -c \"=host\"", "r");
+    if (fp)
+    {
+        int count = 0;
+        if (fscanf(fp, "%d", &count) == 1)
+        {
+            for (int i = 1; i <= count; i++) 
+            {
+                char path[128];
+                snprintf(path, sizeof(path), "Device.DHCPv4.Server.Pool.1.StaticAddress.%d.", i);
+                USP_DM_InformInstance(path);
+            }
+        }
+        pclose(fp);
+    }
 
     return USP_ERR_OK;
 }

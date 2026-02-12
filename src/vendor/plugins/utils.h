@@ -7,5 +7,6 @@ int validateUspBoolean(char *value);
 void replaceKVValue(kv_pair_t *kv, char *newValue);
 bool isValidIPv4Address(const char *ip);
 bool isValidIPv6Address(const char *ip);
+int GetInstanceIndex(const char *path, const char *obj_name);
 
 #endif

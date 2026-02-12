@@ -25,5 +25,9 @@ bool isDnsMasqRunning();
 int GetDHCPv4Status(dm_req_t *req, char *buf, int len);
 int ValidateAddPool(dm_req_t *req);
 int ValidateRemovePool(dm_req_t *req);
+int ValidateAddStaticAddress(dm_req_t *req);
+int ValidateRemoveStaticAddress(dm_req_t *req);
+int AddStaticAddress(dm_req_t *req);
+int DeleteStaticAddress(dm_req_t *req);
 
 #endif
