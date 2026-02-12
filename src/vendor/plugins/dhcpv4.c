@@ -688,6 +688,7 @@ int DeleteStaticAddress(dm_req_t *req)
 
     snprintf(command, sizeof(command), "uci delete dhcp.@host[%d]", inst - 1);
     system(command);
+    system("uci commit dhcp");
 
     return USP_ERR_OK;
 }
