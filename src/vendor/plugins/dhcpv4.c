@@ -102,13 +102,13 @@ int GetDHCPv4Params(int group_id, kv_vector_t *params)
 
             if (endsWith(kv->key, "Chaddr"))
             {
-                snprintf(uci_path, sizeof(uci_path), "dhcp.@host[%d].mac", inst - 1);
+                snprintf(uci_path, sizeof(uci_path), "dhcp.host_%d.mac", inst);
                 GetStringValue(uci_path, buf, sizeof(buf));
                 replaceKVValue(kv, buf);
             }
             else if (endsWith(kv->key, "Yiaddr"))
             {
-                snprintf(uci_path, sizeof(uci_path), "dhcp.@host[%d].ip", inst - 1);
+                snprintf(uci_path, sizeof(uci_path), "dhcp.host_%d.ip", inst - 1);
                 GetStringValue(uci_path, buf, sizeof(buf));
                 replaceKVValue(kv, buf);
             }
@@ -184,12 +184,12 @@ int SetDHCPv4Params(int group_id, kv_vector_t *params, unsigned *types, int *fai
 
             if (endsWith(key, "Chaddr"))
             {
-                snprintf(uci_path, sizeof(uci_path), "dhcp.@host[%d].mac", inst - 1);
+                snprintf(uci_path, sizeof(uci_path), "dhcp.host_%d.mac", inst - 1);
                 err = SetStringValue(uci_path, val);
             }
             else if (endsWith(key, "Yiaddr")) {
                 if (!isValidIPv4Address(val)) return USP_ERR_INVALID_VALUE;
-                snprintf(uci_path, sizeof(uci_path), "dhcp.@host[%d].ip", inst - 1);
+                snprintf(uci_path, sizeof(uci_path), "dhcp.host_%d.ip", inst - 1);
                 err = SetStringValue(uci_path, val);
             }
         }
@@ -677,8 +677,14 @@ int ValidateRemoveStaticAddress(dm_req_t *req)
 
 int AddStaticAddress(dm_req_t *req)
 {
-    system("uci add dhcp host > /dev/null");
+    int inst = GetInstanceIndex(req->path, "StaticAddress");
+    char command[128];
+
+    snprintf(command, sizeof(command), "uci set dhcp.host_%d=host", inst);
+    system(command);
     system("uci commit dhcp");
+    system("/etc/init.d/dnsmasq restart");
+
     return USP_ERR_OK;
 }
 
@@ -687,9 +693,10 @@ int DeleteStaticAddress(dm_req_t *req)
     int inst = GetInstanceIndex(req->path, "StaticAddress");
     char command[128];
 
-    snprintf(command, sizeof(command), "uci delete dhcp.@host[%d]", inst - 1);
+    snprintf(command, sizeof(command), "uci delete dhcp.host_%d", inst);
     system(command);
     system("uci commit dhcp");
+    system("/etc/init.d/dnsmasq restart");
 
     return USP_ERR_OK;
 }
