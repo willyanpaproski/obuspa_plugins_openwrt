@@ -86,7 +86,6 @@ int VENDOR_Init(void)
     err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.{i}.MinAddress", DM_STRING);
     err |= USP_REGISTER_GroupedVendorParam_ReadOnly(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.{i}.Status", DM_STRING);
 
-    err |= USP_REGISTER_Object("Device.DHCPv4.Server.Pool.1.StaticAddress.", NULL, NULL, NULL, NULL, NULL, NULL);
     err |= USP_REGISTER_Object("Device.DHCPv4.Server.Pool.1.StaticAddress.{i}.", 
                             ValidateAddStaticAddress, AddStaticAddress, NULL, 
                             ValidateRemoveStaticAddress, DeleteStaticAddress, NULL);
