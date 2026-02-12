@@ -32,6 +32,18 @@ int GetDeviceInfoParams(int group_id, kv_vector_t *params)
             GetTotalMemory(NULL, buf, sizeof(buf));
             replaceKVValue(kv, buf);
         }
+
+        if (strcmp(kv->key, "Device.DeviceInfo.ProcessStatus.CPUUsage") == 0)
+        {
+            GetCPULoad(NULL, buf, sizeof(buf));
+            replaceKVValue(kv, buf);
+        }
+
+        if (strcmp(kv->key, "Device.DeviceInfo.ProcessStatus.ProcessNumberOfEntries") == 0)
+        {
+            GetProccessAmount(NULL, buf, sizeof(buf));
+            replaceKVValue(kv, buf);
+        }
     }
 
     return USP_ERR_OK;
@@ -101,6 +113,30 @@ int GetFreeMemory(dm_req_t *req, char *buf, int len)
     unsigned long free_mem = si.freeram * si.mem_unit;
 
     snprintf(buf, len, "%lu", free_mem);
+
+    return USP_ERR_OK;
+}
+
+int GetProccessAmount(dm_req_t *req, char *buf, int len)
+{
+    struct sysinfo si;
+
+    if (sysinfo(&si) != 0) return USP_ERR_INTERNAL_ERROR;
+
+    snprintf(buf, len, "%u", si.procs);
+
+    return USP_ERR_OK;
+}
+
+int GetCPULoad(dm_req_t *req, char *buf, int len)
+{
+    struct sysinfo si;
+
+    if (sysinfo(&si) != 0) return USP_ERR_INTERNAL_ERROR;
+
+    float load = si.loads[0] / 65536.0f;
+
+    snprintf(buf, len, "%.2f", load);
 
     return USP_ERR_OK;
 }

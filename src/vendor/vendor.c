@@ -100,7 +100,9 @@ int VENDOR_Init(void)
     err |= USP_REGISTER_GroupedVendorParam_ReadWrite(deviceInfo_group_id, "Device.DeviceInfo.X_IXC_Hostname", DM_STRING);
     err |= USP_REGISTER_GroupedVendorParam_ReadOnly(deviceInfo_group_id, "Device.DeviceInfo.MemoryStatus.Free", DM_ULONG);
     err |= USP_REGISTER_GroupedVendorParam_ReadOnly(deviceInfo_group_id, "Device.DeviceInfo.MemoryStatus.Total", DM_ULONG);
-
+    err |= USP_REGISTER_GroupedVendorParam_ReadOnly(deviceInfo_group_id, "Device.DeviceInfo.ProcessStatus.CPUUsage", DM_STRING);
+    err |= USP_REGISTER_GroupedVendorParam_ReadOnly(deviceInfo_group_id, "Device.DeviceInfo.ProcessStatus.ProcessNumberOfEntries", DM_ULONG);
+    
     return err;
 }
 

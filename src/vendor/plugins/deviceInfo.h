@@ -9,5 +9,7 @@ int GetHostname(dm_req_t *req, char *buf, int len);
 int SetHostname(dm_req_t *req, char *buf);
 int GetTotalMemory(dm_req_t *req, char *buf, int len);
 int GetFreeMemory(dm_req_t *req, char *buf, int len);
+int GetProccessAmount(dm_req_t *req, char *buf, int len);
+int GetCPULoad(dm_req_t *req, char *buf, int len);
 
 #endif
