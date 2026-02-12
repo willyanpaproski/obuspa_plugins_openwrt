@@ -678,6 +678,7 @@ int ValidateRemoveStaticAddress(dm_req_t *req)
 int AddStaticAddress(dm_req_t *req)
 {
     system("uci add dhcp host > /dev/null");
+    system("uci commit dhcp");
     return USP_ERR_OK;
 }
 
