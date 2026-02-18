@@ -679,7 +679,6 @@ int AddStaticAddress(dm_req_t *req)
 {
     int inst = GetInstanceIndex(req->path, "StaticAddress");
     char command[256];
-    int res;
 
     snprintf(command, sizeof(command), "uci set dhcp.host_%d=host", inst);
     system(command);
