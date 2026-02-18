@@ -679,19 +679,22 @@ int AddStaticAddress(dm_req_t *req)
 {
     int inst = GetInstanceIndex(req->path, "StaticAddress");
     char command[256];
+    int res = 0;
 
-    snprintf(command, sizeof(command), "uci set dhcp.host_%d=host", inst);
-    system(command);
+    if (inst <= 0) return USP_ERR_INTERNAL_ERROR;
+
+    snprintf(command, sizeof(command), "/sbin/uci set dhcp.host_%d=host", inst);
+    res |= system(command);
     
-    snprintf(command, sizeof(command), "uci set dhcp.host_%d.name='host_%d'", inst, inst);
-    system(command);
+    snprintf(command, sizeof(command), "/sbin/uci set dhcp.host_%d.name='host_%d'", inst, inst);
+    res |= system(command);
 
-    snprintf(command, sizeof(command), "uci set dhcp.host_%d.mac='00:00:00:00:00:00'", inst);
-    system(command);
+    snprintf(command, sizeof(command), "/sbin/uci set dhcp.host_%d.mac='00:00:00:00:00:00'", inst);
+    res |= system(command);
 
-    system("uci commit dhcp");
-
-    return USP_ERR_OK;
+    res |= system("/sbin/uci commit dhcp");
+    
+    return USP_ERR_OK; 
 }
 
 int DeleteStaticAddress(dm_req_t *req)

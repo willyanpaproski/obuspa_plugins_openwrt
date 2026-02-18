@@ -129,19 +129,19 @@ int VENDOR_Init(void)
 **************************************************************************/
 int VENDOR_Start(void)
 {
-
     USP_DM_InformInstance("Device.DHCPv4.Server.Pool.1.");
 
-    FILE *fp = popen("uci show dhcp | grep \"=host\" | wc -l", "r");
+    FILE *fp = popen("/sbin/uci show dhcp | grep \"=host\" | cut -d'.' -f2 | cut -d'=' -f1", "r");
     if (fp)
     {
-        int count = 0;
-        if (fscanf(fp, "%d", &count) == 1)
+        char section_name[64];
+        while (fgets(section_name, sizeof(section_name), fp))
         {
-            for (int i = 1; i <= count; i++) 
+            int inst_id;
+            if (sscanf(section_name, "host_%d", &inst_id) == 1)
             {
                 char path[128];
-                snprintf(path, sizeof(path), "Device.DHCPv4.Server.Pool.1.StaticAddress.%d.", i);
+                snprintf(path, sizeof(path), "Device.DHCPv4.Server.Pool.1.StaticAddress.%d.", inst_id);
                 USP_DM_InformInstance(path);
             }
         }
