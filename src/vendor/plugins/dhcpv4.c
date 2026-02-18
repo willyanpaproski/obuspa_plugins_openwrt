@@ -682,19 +682,15 @@ int AddStaticAddress(dm_req_t *req)
     int res;
 
     snprintf(command, sizeof(command), "uci set dhcp.host_%d=host", inst);
-    res = system(command);
+    system(command);
     
     snprintf(command, sizeof(command), "uci set dhcp.host_%d.name='host_%d'", inst, inst);
-    res |= system(command);
+    system(command);
 
     snprintf(command, sizeof(command), "uci set dhcp.host_%d.mac='00:00:00:00:00:00'", inst);
-    res |= system(command);
+    system(command);
 
-    res |= system("uci commit dhcp");
-
-    if (res != 0) {
-        return USP_ERR_INTERNAL_ERROR;
-    }
+    system("uci commit dhcp");
 
     return USP_ERR_OK;
 }
