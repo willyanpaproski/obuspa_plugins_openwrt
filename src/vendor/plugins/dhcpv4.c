@@ -677,23 +677,33 @@ int ValidateRemoveStaticAddress(dm_req_t *req)
 
 int AddStaticAddress(dm_req_t *req)
 {
-    int inst = GetInstanceIndex(req->path, "StaticAddress");
+    int inst = req->inst; 
     char section_name[32];
     
     printf("\n\nDEBUG: AddStaticAddress chamado para instancia %d\n\n", inst);
 
-    if (inst <= 0) return USP_ERR_INTERNAL_ERROR;
+    if (inst <= 0) {
+        inst = GetInstanceIndex(req->path, "StaticAddress");
+    }
+
+    if (inst <= 0) {
+        printf("DEBUG: Erro ao determinar indice da instancia\n");
+        return USP_ERR_INTERNAL_ERROR;
+    }
 
     snprintf(section_name, sizeof(section_name), "host_%d", inst);
 
     int err = AddNamedSection("dhcp", "host", section_name);
-    
     if (err != USP_ERR_OK) {
         printf("DEBUG: Falha ao criar seção UCI: %s\n", section_name);
         return USP_ERR_INTERNAL_ERROR;
     }
 
-    printf("DEBUG: Seção %s criada com sucesso!\n", section_name);
+    char uci_path[64];
+    snprintf(uci_path, sizeof(uci_path), "dhcp.%s.name", section_name);
+    SetStringValue(uci_path, section_name);
+
+    printf("DEBUG: Seção %s criada com sucesso no UCI!\n", section_name);
     return USP_ERR_OK;
 }
 
