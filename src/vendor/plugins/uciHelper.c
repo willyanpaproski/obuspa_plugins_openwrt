@@ -175,16 +175,23 @@ int AddNamedSection(const char *package, const char *type, const char *name)
     if (!ctx) return USP_ERR_INTERNAL_ERROR;
 
     memset(&ptr, 0, sizeof(ptr));
-    ptr.package = package;
-    ptr.section = name;
-    ptr.value = type;
 
-    if (uci_set(ctx, &ptr) != UCI_OK) {
+    struct uci_package *p = NULL;
+    if (uci_load(ctx, package, &p) != UCI_OK) {
         ret = USP_ERR_INTERNAL_ERROR;
         goto cleanup;
     }
 
-    uci_commit(ctx, &ptr.p, false);
+    ptr.p = p;
+    ptr.section = name;
+    ptr.value = type;
+    ptr.package = package;
+
+    if (uci_set(ctx, &ptr) != UCI_OK) {
+        ret = USP_ERR_INTERNAL_ERROR;
+    } else {
+        uci_commit(ctx, &p, false);
+    }
 
 cleanup:
     uci_free_context(ctx);

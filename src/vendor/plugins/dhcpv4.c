@@ -692,8 +692,11 @@ int AddStaticAddress(dm_req_t *req)
     snprintf(uci_path, sizeof(uci_path), "dhcp.%s.name", section_name);
     SetStringValue(uci_path, section_name);
 
-    snprintf(uci_path, sizeof(uci_path), "dhcp.%s.dns", section_name);
-    SetStringValue(uci_path, "1");
+    snprintf(uci_path, sizeof(uci_path), "dhcp.%s.mac", section_name);
+    SetStringValue(uci_path, "00:00:00:00:00:00");
+
+    snprintf(uci_path, sizeof(uci_path), "dhcp.%s.ip", section_name);
+    SetStringValue(uci_path, "0.0.0.0");
 
     return USP_ERR_OK;
 }
