@@ -684,10 +684,7 @@ int AddStaticAddress(dm_req_t *req)
         inst = req->inst->instances[num_inst - 1];
     }
 
-    printf("\n\nDEBUG: AddStaticAddress chamado. Order: %d, Instancia Detectada: %d\n\n", num_inst, inst);
-
     if (inst <= 0) {
-        printf("DEBUG: Erro ao determinar indice da instancia via req->inst\n");
         return USP_ERR_INTERNAL_ERROR;
     }
 
@@ -696,7 +693,6 @@ int AddStaticAddress(dm_req_t *req)
 
     int err = AddNamedSection("dhcp", "host", section_name);
     if (err != USP_ERR_OK) {
-        printf("DEBUG: Falha ao criar secao UCI: %s\n", section_name);
         return USP_ERR_INTERNAL_ERROR;
     }
 
@@ -704,7 +700,6 @@ int AddStaticAddress(dm_req_t *req)
     snprintf(uci_path, sizeof(uci_path), "dhcp.%s.name", section_name);
     SetStringValue(uci_path, section_name);
 
-    printf("DEBUG: Secao %s criada com sucesso no UCI!\n", section_name);
     return USP_ERR_OK;
 }
 
