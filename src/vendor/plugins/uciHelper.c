@@ -162,3 +162,31 @@ cleanup:
     uci_free_context(ctx);
     return ret;
 }
+
+int AddNamedSection(const char *package, const char *type, const char *name)
+{
+    struct uci_context *ctx;
+    struct uci_ptr ptr;
+    int ret = USP_ERR_OK;
+
+    if (!package || !type || !name) return USP_ERR_INTERNAL_ERROR;
+
+    ctx = uci_alloc_context();
+    if (!ctx) return USP_ERR_INTERNAL_ERROR;
+
+    memset(&ptr, 0, sizeof(ptr));
+    ptr.package = package;
+    ptr.section = name;
+    ptr.value = type;
+
+    if (uci_set(ctx, &ptr) != UCI_OK) {
+        ret = USP_ERR_INTERNAL_ERROR;
+        goto cleanup;
+    }
+
+    uci_commit(ctx, &ptr.p, false);
+
+cleanup:
+    uci_free_context(ctx);
+    return ret;
+}

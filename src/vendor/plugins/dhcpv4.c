@@ -678,23 +678,24 @@ int ValidateRemoveStaticAddress(dm_req_t *req)
 int AddStaticAddress(dm_req_t *req)
 {
     int inst = GetInstanceIndex(req->path, "StaticAddress");
-    char command[256];
-    int res = 0;
+    char section_name[32];
+    char uci_path[64];
 
     if (inst <= 0) return USP_ERR_INTERNAL_ERROR;
 
-    snprintf(command, sizeof(command), "/sbin/uci set dhcp.host_%d=host", inst);
-    res |= system(command);
-    
-    snprintf(command, sizeof(command), "/sbin/uci set dhcp.host_%d.name='host_%d'", inst, inst);
-    res |= system(command);
+    snprintf(section_name, sizeof(section_name), "host_%d", inst);
 
-    snprintf(command, sizeof(command), "/sbin/uci set dhcp.host_%d.mac='00:00:00:00:00:00'", inst);
-    res |= system(command);
+    if (AddNamedSection("dhcp", "host", section_name) != USP_ERR_OK) {
+        return USP_ERR_INTERNAL_ERROR;
+    }
 
-    res |= system("/sbin/uci commit dhcp");
-    
-    return USP_ERR_OK; 
+    snprintf(uci_path, sizeof(uci_path), "dhcp.%s.name", section_name);
+    SetStringValue(uci_path, section_name);
+
+    snprintf(uci_path, sizeof(uci_path), "dhcp.%s.dns", section_name);
+    SetStringValue(uci_path, "1");
+
+    return USP_ERR_OK;
 }
 
 int DeleteStaticAddress(dm_req_t *req)
