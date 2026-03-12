@@ -37,7 +37,7 @@ int GetDHCPv4Params(int group_id, kv_vector_t *params)
 
         if (strcmp(kv->key, "Device.DHCPv4.Server.Pool.1.Alias") == 0)
         {
-            snprintf(buf, sizeof(buf), "cpe-dhcpv4pool");
+            GetPoolAlias(NULL, buf, sizeof(buf));
             replaceKVValue(kv, buf);
         }
 
@@ -102,19 +102,47 @@ int GetDHCPv4Params(int group_id, kv_vector_t *params)
 
             if (endsWith(kv->key, "Chaddr"))
             {
-                snprintf(uci_path, sizeof(uci_path), "dhcp.host_%d.mac", inst);
-                GetStringValue(uci_path, buf, sizeof(buf));
+                GetStaticHostMacAddress(NULL, buf, sizeof(buf), inst);
                 replaceKVValue(kv, buf);
             }
             else if (endsWith(kv->key, "Yiaddr"))
             {
-                snprintf(uci_path, sizeof(uci_path), "dhcp.host_%d.ip", inst);
-                GetStringValue(uci_path, buf, sizeof(buf));
+                GetStaticHostIpAddress(NULL, buf, sizeof(buf), inst);
                 replaceKVValue(kv, buf);
             }
             else if (endsWith(kv->key, "Enable"))
             {
                 replaceKVValue(kv, "true");
+            }
+        }
+
+        if (strstr(kv->key, "Option."))
+        {
+            int inst = GetInstanceIndex(kv->key, "Option");
+            char uci_path[128];
+            if (endsWith(kv->key, "Alias"))
+            {
+                snprintf(uci_path, sizeof(uci_path), "", inst);
+                GetStringValue(uci_path, buf, sizeof(buf));
+                replaceKVValue(kv, buf);
+            }
+            if (endsWith(kv->key, "Enable"))
+            {
+                snprintf(uci_path, sizeof(uci_path), "", inst);
+                GetStringValue(uci_path, buf, sizeof(buf));
+                replaceKVValue(kv, buf);
+            }
+            if (endsWith(kv->key, "Tag"))
+            {
+                snprintf(uci_path, sizeof(uci_path), "", inst);
+                GetStringValue(uci_path, buf, sizeof(buf));
+                replaceKVValue(kv, buf);
+            }
+            if (endsWith(kv->key, "Value"))
+            {
+                snprintf(uci_path, sizeof(uci_path), "", inst);
+                GetStringValue(uci_path, buf, sizeof(buf));
+                replaceKVValue(kv, buf);
             }
         }
     }
@@ -135,6 +163,11 @@ int SetDHCPv4Params(int group_id, kv_vector_t *params, unsigned *types, int *fai
         if (strcmp(key, "Device.DHCPv4.Server.Enable") == 0)
         {
             err = SetPoolEnabled(NULL, val);
+        }
+
+        if (strcmp(key, "Device.DHCPv4.Server.Pool.1.Alias") == 0)
+        {
+            err = SetPoolAlias(NULL, val);
         }
 
         if (strcmp(key, "Device.DHCPv4.Server.Pool.1.DNSServers") == 0)
@@ -184,13 +217,10 @@ int SetDHCPv4Params(int group_id, kv_vector_t *params, unsigned *types, int *fai
 
             if (endsWith(key, "Chaddr"))
             {
-                snprintf(uci_path, sizeof(uci_path), "dhcp.host_%d.mac", inst);
-                err = SetStringValue(uci_path, val);
+                err = SetStaticHostMacAddress(NULL, val, inst);
             }
             else if (endsWith(key, "Yiaddr")) {
-                if (!isValidIPv4Address(val)) return USP_ERR_INVALID_VALUE;
-                snprintf(uci_path, sizeof(uci_path), "dhcp.host_%d.ip", inst);
-                err = SetStringValue(uci_path, val);
+                err = SetStaticHostIpAddress(NULL, val, inst);
             }
         }
 
@@ -655,6 +685,22 @@ int GetDHCPv4Status(dm_req_t *req, char *buf, int len)
     return USP_ERR_OK;
 }
 
+int GetPoolAlias(dm_req_t *req, char *buf, int len)
+{
+    (void)req;
+
+    return GetStringValue("system.@system[0].hostname", buf, len);
+}
+
+int SetPoolAlias(dm_req_t *req, char *buf)
+{
+    if (buf == NULL) return USP_ERR_INTERNAL_ERROR;
+
+    int ret = SetStringValue("dhcp.lan.alias", buf);
+
+    return ret;
+}
+
 int ValidateAddPool(dm_req_t *req)
 {
     return USP_ERR_OBJECT_NOT_CREATABLE;
@@ -713,5 +759,75 @@ int DeleteStaticAddress(dm_req_t *req)
     system("uci commit dhcp");
     system("/etc/init.d/dnsmasq restart");
 
+    return USP_ERR_OK;
+}
+
+int GetStaticHostMacAddress(dm_req_t *req, char *buf, int len, int inst)
+{
+    char uci_path[128];
+
+    if (buf == NULL) return USP_ERR_INTERNAL_ERROR;
+
+    snprintf(uci_path, sizeof(uci_path), "dhcp.host_%d.mac", inst);
+
+    return GetStringValue(uci_path, buf, len);
+}
+
+int SetStaticHostMacAddress(dm_req_t *req, char *buf, int inst)
+{
+    char uci_path[128];
+
+    if (buf == NULL) return USP_ERR_INTERNAL_ERROR;
+
+    snprintf(uci_path, sizeof(uci_path), "dhcp.host_%d.mac", inst);
+
+    int ret = SetStringValue(uci_path, buf);
+
+    return ret;
+}
+
+int GetStaticHostIpAddress(dm_req_t *req, char *buf, int len, int inst)
+{
+    char uci_path[128];
+
+    if (buf == NULL) return USP_ERR_INTERNAL_ERROR;
+
+    snprintf(uci_path, sizeof(uci_path), "dhcp.host_%d.ip", inst);
+
+    return GetStringValue(uci_path, buf, len);
+}
+
+int SetStaticHostIpAddress(dm_req_t *req, char buf, int inst)
+{
+    char uci_path[128];
+
+    if (buf == NULL) return USP_ERR_INTERNAL_ERROR;
+
+    if (!isValidIPv4Address(buf)) return USP_ERR_INVALID_VALUE;
+
+    snprintf(uci_path, sizeof(uci_path), "dhcp.host_%d.ip", inst);
+
+    int ret = SetStringValue(uci_path, buf);
+
+    return ret;
+}
+
+int ValidateAddOption(dm_req_t *req)
+{
+    return USP_ERR_OK;
+}
+
+int ValidateRemoveOption(dm_req_t *req)
+{
+    return USP_ERR_OK;
+}
+
+int AddOption(dm_req_t *req)
+{
+    return USP_ERR_OK;
+}
+
+int DeleteOption(dm_req_t *req)
+{
     return USP_ERR_OK;
 }

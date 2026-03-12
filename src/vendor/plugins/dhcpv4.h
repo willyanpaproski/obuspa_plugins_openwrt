@@ -23,11 +23,21 @@ int GetPoolEnabled(dm_req_t *req, char *buf, int len);
 int SetPoolEnabled(dm_req_t *req, char *buf);
 bool isDnsMasqRunning();
 int GetDHCPv4Status(dm_req_t *req, char *buf, int len);
+int GetPoolAlias(dm_req_t *req, char *buf, int len);
+int SetPoolAlias(dm_req_t *req, char *buf);
 int ValidateAddPool(dm_req_t *req);
 int ValidateRemovePool(dm_req_t *req);
+int GetStaticHostMacAddress(dm_req_t *req, char *buf, int inst);
+int SetStaticHostMacAddress(dm_req_t *req, char *buf, int inst);
+int GetStaticHostIpAddress(dm_req_t *req, char *buf, int len, int inst);
+int SetStaticHostIpAddress(dm_req_t *req, char buf, int inst);
 int ValidateAddStaticAddress(dm_req_t *req);
 int ValidateRemoveStaticAddress(dm_req_t *req);
 int AddStaticAddress(dm_req_t *req);
 int DeleteStaticAddress(dm_req_t *req);
+int ValidateAddOption(dm_req_t *req);
+int ValidateRemoveOption(dm_req_t *req);
+int AddOption(dm_req_t *req);
+int DeleteOption(dm_req_t *req);
 
 #endif

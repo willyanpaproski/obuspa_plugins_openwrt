@@ -75,7 +75,7 @@ int VENDOR_Init(void)
     err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Enable", DM_BOOL);
     err |= USP_REGISTER_GroupedVendorParam_ReadOnly(dhcpv4_group_id, "Device.DHCPv4.Server.PoolNumberOfEntries", DM_STRING);
     err |= USP_REGISTER_Object("Device.DHCPv4.Server.Pool.{i}.", ValidateAddPool, NULL, NULL, ValidateRemovePool, NULL, NULL);
-    err |= USP_REGISTER_GroupedVendorParam_ReadOnly(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.{i}.Alias", DM_STRING);
+    err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.{i}.Alias", DM_STRING);
     err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.{i}.DNSServers", DM_STRING);
     err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.{i}.DomainName", DM_STRING);
     err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.{i}.Enable", DM_BOOL);
@@ -92,6 +92,14 @@ int VENDOR_Init(void)
     err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.1.StaticAddress.{i}.Enable", DM_BOOL);
     err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.1.StaticAddress.{i}.Chaddr", DM_STRING);
     err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.1.StaticAddress.{i}.Yiaddr", DM_STRING);
+
+    err |= USP_REGISTER_Object("Device.DHCPv4.Server.Pool.1.Option.{i}.",
+                            ValidateAddOption, AddOption, NULL, 
+                            ValidateRemoveOption, DeleteOption, NULL);
+    err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.1.StaticAddress.{i}.Alias", DM_STRING);
+    err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.1.StaticAddress.{i}.Enable", DM_BOOL);
+    err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.1.StaticAddress.{i}.Tag", DM_INT);
+    err |= USP_REGISTER_GroupedVendorParam_ReadWrite(dhcpv4_group_id, "Device.DHCPv4.Server.Pool.1.StaticAddress.{i}.Value", DM_STRING);
 
     //NTP
     err |= USP_REGISTER_GroupVendorHooks(ntp_group_id, GetTimeParams, SetTimeParams, NULL, NULL);
